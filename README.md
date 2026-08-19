@@ -1,5 +1,21 @@
 # contrast-guard
 
+<!-- bloom-series-nav -->
+
+<table align="center">
+<tr>
+<td align="center" width="33%"><a href="https://github.com/webkubor/typora-Bloom-theme">🌸 Bloom for Typora</a><br/><sub>24 套主题</sub></td>
+<td align="center" width="33%"><a href="https://github.com/webkubor/dsh-bloom-theme">🌊 Bloom for DSH</a><br/><sub>4 套配色</sub></td>
+<td align="center" width="33%"><b>🛡️ contrast-guard</b><br/><sub>配色护栏 · 当前</sub></td>
+</tr>
+</table>
+
+<p align="center">
+  <sub>同一套莫兰迪设计语言：两个宿主的主题，加一个守住它们配色的工具。<br/>
+  <i>One Morandi design language — two themes, and the tool that keeps their colors honest.</i></sub>
+</p>
+
+
 把配色对比度做成 CI 护栏。**不达标时直接告诉你该改成多少**，而不是只丢一个红叉。
 
 支持 OKLCH，零依赖，12.6KB。
