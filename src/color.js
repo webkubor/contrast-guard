@@ -65,6 +65,25 @@ export function parseColor(input, backdrop = null) {
   return null
 }
 
+/** sRGB（0..1）→ oklch，用于对 hex/rgb 也能反推建议明度 */
+export function rgbToOklch([r, g, b]) {
+  const lin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
+  const R = lin(r), G = lin(g), B = lin(b)
+
+  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B)
+  const m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B)
+  const s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B)
+
+  const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s
+  const Bb = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
+
+  const C = Math.sqrt(A * A + Bb * Bb)
+  let H = (Math.atan2(Bb, A) * 180) / Math.PI
+  if (H < 0) H += 360
+  return { L, C, H }
+}
+
 /** WCAG 相对亮度 */
 export function luminance([r, g, b]) {
   const f = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
@@ -91,11 +110,19 @@ export function toHex(rgb) {
  * @returns {{L:number, ratio:number, hex:string, delta:number} | null} 无解返回 null
  */
 export function solveLightness(colorStr, bgRgb, min, { step = 0.5 } = {}) {
+  let L0, C, H
   const m = String(colorStr).match(/oklch\(\s*([\d.]+)%?\s+([\d.]+)\s+([\d.]+)/i)
-  if (!m) return null
-  const L0 = parseFloat(m[1])
-  const C = parseFloat(m[2])
-  const H = parseFloat(m[3])
+  if (m) {
+    L0 = parseFloat(m[1]); C = parseFloat(m[2]); H = parseFloat(m[3])
+  } else {
+    // hex / rgb 也要能给建议：编译后的成品几乎都是 hex，
+    // 而那正是最需要建议值的场合（人看到的是 dist，改的是源码）。
+    // 先转进 oklch 求解，输出时同时给回 hex，两边都能直接用。
+    const rgb = parseColor(colorStr)
+    if (!rgb) return null
+    const o = rgbToOklch(rgb)
+    L0 = o.L * 100; C = o.C; H = o.H
+  }
   const bgLum = luminance(bgRgb)
 
   // 前景比背景暗就往下压，反之往上提

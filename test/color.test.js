@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { parseColor, contrast, solveLightness, toHex, oklchToRgb } from '../src/color.js'
+import { parseColor, contrast, solveLightness, toHex, oklchToRgb, rgbToOklch } from '../src/color.js'
 import { extractCss, extractJs, resolveVar } from '../src/extract.js'
 import { check } from '../src/check.js'
 import { writeFileSync, mkdtempSync } from 'node:fs'
@@ -109,4 +109,34 @@ test('check 跳过未定义该组变量的文件，而不是报错', () => {
   const { failed, checked } = check({ files: [f], pairs: [{ fg: 'accent', bg: 'bg', min: 4.5 }] })
   assert.equal(checked, 0)
   assert.equal(failed, 0)
+})
+
+test('rgbToOklch 与 oklchToRgb 互为逆运算', () => {
+  const orig = { L: 0.58, C: 0.22, H: 350 }
+  const back = rgbToOklch(oklchToRgb(orig.L, orig.C, orig.H))
+  assert.ok(near(back.L, orig.L, 0.005), `L: ${back.L} vs ${orig.L}`)
+  assert.ok(near(back.C, orig.C, 0.005), `C: ${back.C} vs ${orig.C}`)
+  assert.ok(near(back.H, orig.H, 1), `H: ${back.H} vs ${orig.H}`)
+})
+
+test('hex 色值也能反推建议值（编译后的成品都是 hex）', () => {
+  const bg = parseColor('#fef6f9')
+  const s = solveLightness('#e63f9f', bg, 4.5)
+  assert.ok(s, 'hex 输入必须有解 —— 这是 dist 成品的常态')
+  assert.ok(s.ratio >= 4.5)
+  assert.ok(s.hex.startsWith('#'))
+})
+
+test('extractCss 忽略 @media 内的覆盖，只取主块', () => {
+  const css = `
+    :root { --bg: #0a1919; --accent: #2cc5c5; }
+    @media print { :root { --bg: #ebf4f4; } }
+  `
+  const vars = extractCss(css)
+  assert.equal(vars.bg, '#0a1919', '深色主题的 --bg 不应被 print 块的浅色覆盖')
+})
+
+test('extractCss 同名变量取首次赋值', () => {
+  const vars = extractCss(':root { --accent: #111; } .x { --accent: #999; }')
+  assert.equal(vars.accent, '#111')
 })

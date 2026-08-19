@@ -8,12 +8,31 @@
  */
 import { readFileSync } from 'node:fs'
 
-/** CSS 自定义属性：--name: value; */
-export function extractCss(source) {
+/**
+ * CSS 自定义属性：--name: value;
+ *
+ * ⚠️ 只取每个变量「第一次」出现的值，并且默认忽略 @media 块。
+ * 主题文件常在 @media print 里把 --bg 覆盖成浅色（打印用白底），
+ * 若取最后一次赋值，就会拿打印背景去和屏幕前景比对 ——
+ * 实测 bloom-ripple-dark.css 的 --bg 主块是 #0a1919，print 块是 #ebf4f4，
+ * 取错会把一个达标的深色主题误报成 3.01:1。
+ *
+ * @param {string} source
+ * @param {{includeAtRules?: boolean}} [opts] includeAtRules=true 时连 @media 内的一起收
+ */
+export function extractCss(source, { includeAtRules = false } = {}) {
+  let scope = source
+  if (!includeAtRules) {
+    // 截到第一个顶层 @ 规则为止：主色板一定在它之前声明
+    const at = source.search(/^\s*@(media|supports|container)\b/m)
+    if (at > 0) scope = source.slice(0, at)
+  }
   const vars = {}
   const re = /--([\w-]+)\s*:\s*([^;{}]+);/g
   let m
-  while ((m = re.exec(source))) vars[m[1]] = m[2].trim()
+  while ((m = re.exec(scope))) {
+    if (!(m[1] in vars)) vars[m[1]] = m[2].trim() // 首次赋值优先
+  }
   return vars
 }
 
