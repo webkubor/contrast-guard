@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { parseColor, contrast, solveLightness, toHex, oklchToRgb, rgbToOklch } from '../src/color.js'
-import { extractCss, extractJs, resolveVar } from '../src/extract.js'
+import { extractCss, extractJs, resolveVar, extractGroups } from '../src/extract.js'
 import { check } from '../src/check.js'
 import { writeFileSync, mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -139,4 +139,41 @@ test('extractCss 忽略 @media 内的覆盖，只取主块', () => {
 test('extractCss 同名变量取首次赋值', () => {
   const vars = extractCss(':root { --accent: #111; } .x { --accent: #999; }')
   assert.equal(vars.accent, '#111')
+})
+
+test('extractGroups 拆分多组色板，避免同名键互相覆盖', () => {
+  const src = `const PALETTE = {
+  mist: {
+    accentL: 'oklch(50% 0.08 240)',
+    bgL: 'oklch(96% 0.01 240)',
+  },
+  petal: {
+    accentL: 'oklch(58% 0.22 350)',
+    bgL: 'oklch(98% 0.01 350)',
+  },
+}`
+  const g = extractGroups(src)
+  assert.deepEqual(Object.keys(g).sort(), ['mist', 'petal'])
+  assert.equal(g.mist.accentL, 'oklch(50% 0.08 240)')
+  assert.equal(g.petal.accentL, 'oklch(58% 0.22 350)', '各组的同名键必须独立保留')
+})
+
+test('check groups:true 时逐组检查而非只查最后一组', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'cg-'))
+  const f = join(dir, 'palette.js')
+  // 第一组不达标、第二组达标 —— 不分组的话第一组会被覆盖掉从而漏检
+  writeFileSync(f, `const P = {
+  bad: {
+    accent: 'oklch(64% 0.22 350)',
+    bg: 'oklch(98% 0.01 350)',
+  },
+  good: {
+    accent: 'oklch(58% 0.22 350)',
+    bg: 'oklch(98% 0.01 350)',
+  },
+}`)
+  const r = check({ files: [f], pairs: [{ fg: 'accent', bg: 'bg', min: 4.5 }], groups: true })
+  assert.equal(r.checked, 2, '两组都要被检查')
+  assert.equal(r.failed, 1, '只有 bad 组不达标')
+  assert.equal(r.results.find(x => !x.pass).group, 'bad', '失败项要能指出是哪一组')
 })

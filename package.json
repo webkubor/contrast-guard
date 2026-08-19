@@ -1,6 +1,6 @@
 {
   "name": "contrast-guard",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "把配色对比度做成 CI 护栏：支持 OKLCH，检查不达标时直接反推出该改成多少 —— 零依赖，一条命令接进 CI",
   "type": "module",
   "bin": {

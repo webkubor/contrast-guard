@@ -88,7 +88,7 @@ if (!files.length) {
   process.exit(2)
 }
 
-const { results, failed, checked } = check({ files, pairs: config.pairs })
+const { results, failed, checked } = check({ files, pairs: config.pairs, groups: config.groups === true })
 
 if (args.includes('--json')) {
   console.log(JSON.stringify({ checked, failed, results }, null, 2))
@@ -106,7 +106,7 @@ if (!failed) {
 console.log(`${C.r}✗ ${bad.length} 组配色低于门槛${C.x}（共检查 ${checked} 组）\n`)
 for (const r of bad) {
   if (r.error) { console.log(`  ${C.r}${rel(r.file)}${C.x}  ${r.error}`); continue }
-  console.log(`  ${C.b}${rel(r.file)}${C.x}  ${r.pair}`)
+  console.log(`  ${C.b}${rel(r.file)}${C.x}${r.group ? C.y + '  [' + r.group + ']' + C.x : ''}  ${r.pair}`)
   console.log(`    ${r.fgHex} on ${r.bgHex}   ${C.r}${r.ratio.toFixed(2)}:1${C.x}  ${C.d}门槛 ${r.min}${C.x}`)
   if (r.suggestion) {
     const s = r.suggestion

@@ -10,21 +10,26 @@ import { extractFile, resolveVar } from './extract.js'
  * @param {Array<{fg:string,bg:string,min:number,label?:string}>} config.pairs
  * @returns {{results:Array, failed:number, checked:number}}
  */
-export function check({ files, pairs }) {
+export function check({ files, pairs, groups = false }) {
   const results = []
   let failed = 0
   let checked = 0
 
   for (const file of files) {
-    let vars
+    // groups:true 会把一个文件里的多组色板拆开逐组检查。
+    // 不拆的话各组同名变量互相覆盖，只有最后一组被检查 —— 显示全绿但实际漏了 N-1 组。
+    let scopes
     try {
-      vars = extractFile(file)
+      scopes = groups
+        ? Object.entries(extractFile(file, { groups: true })).map(([name, vars]) => ({ name, vars }))
+        : [{ name: null, vars: extractFile(file) }]
     } catch (err) {
       results.push({ file, error: err.message })
       failed++
       continue
     }
 
+    for (const { name: scopeName, vars } of scopes)
     for (const pair of pairs) {
       const fgRaw = resolveVar(vars, pair.fg)
       const bgRaw = resolveVar(vars, pair.bg)
@@ -42,6 +47,7 @@ export function check({ files, pairs }) {
 
       results.push({
         file,
+        group: scopeName,
         pair: pair.label || `${pair.fg} / ${pair.bg}`,
         fg: pair.fg,
         bg: pair.bg,

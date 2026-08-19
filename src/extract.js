@@ -49,8 +49,37 @@ export function extractJs(source) {
   return vars
 }
 
-export function extractFile(path) {
+/**
+ * 一个文件里含多组色板时，按顶层键拆开分别提取。
+ *
+ * 常见于把所有变体写在同一个对象里：
+ *   const PALETTE = {
+ *     mist:  { accentL: 'oklch(…)', bgL: 'oklch(…)' },
+ *     petal: { accentL: 'oklch(…)', bgL: 'oklch(…)' },
+ *   }
+ * 若按整文件提取，各组同名键会互相覆盖，只剩最后一组被检查 ——
+ * 结果是「显示全绿，其实只查了 1/N」，比不检查更危险。
+ *
+ * @returns {Record<string, Record<string,string>>} 组名 → 该组变量表
+ */
+export function extractGroups(source, { groupPattern } = {}) {
+  const groups = {}
+  // 匹配缩进 2-4 空格的 `名字: {`，即顶层分组；更深的嵌套不当作组
+  const re = groupPattern || /^[ \t]{2,4}(\w[\w-]*)\s*:\s*\{/gm
+  const starts = []
+  let m
+  while ((m = re.exec(source))) starts.push({ name: m[1], from: m.index + m[0].length })
+  for (let i = 0; i < starts.length; i++) {
+    const end = i + 1 < starts.length ? starts[i + 1].from : source.length
+    const vars = extractJs(source.slice(starts[i].from, end))
+    if (Object.keys(vars).length) groups[starts[i].name] = vars
+  }
+  return groups
+}
+
+export function extractFile(path, { groups = false } = {}) {
   const src = readFileSync(path, 'utf8')
+  if (groups) return extractGroups(src)
   return /\.(css|scss|less)$/i.test(path) ? extractCss(src) : extractJs(src)
 }
 
