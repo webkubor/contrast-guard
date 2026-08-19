@@ -1,0 +1,41 @@
+{
+  "name": "contrast-guard",
+  "version": "0.1.0",
+  "description": "把配色对比度做成 CI 护栏：支持 OKLCH，检查不达标时直接反推出该改成多少 —— 零依赖，一条命令接进 CI",
+  "type": "module",
+  "bin": {
+    "contrast-guard": "./src/cli.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "node src/cli.js"
+  },
+  "keywords": [
+    "wcag",
+    "contrast",
+    "accessibility",
+    "a11y",
+    "oklch",
+    "color",
+    "design-tokens",
+    "ci",
+    "theme",
+    "design-system"
+  ],
+  "license": "MIT",
+  "author": "webkubor",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
