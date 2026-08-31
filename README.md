@@ -189,6 +189,25 @@ signatureMoves），记录计量抓不到、只能看图得出的东西。数字
 之所以以 Node 为目标而不是 Bun：这个包是被别的项目依赖的 CI 护栏，
 不该要求使用方切换运行时；GitHub Actions 默认带 Node，用 Bun 得多一步 `setup-bun`。
 
+## 配套：同一条前端质量链路
+
+和 [**vite-plugin-agent-eyes**](https://github.com/webkubor/vite-plugin-agent-eyes)
+是一条链路上的两环，拦的失败模式不重叠——**每一环拦的都是前一环拦不住的东西**：
+
+| 时机 | 工具 | 拦什么 | 漏掉会怎样 |
+|---|---|---|---|
+| 写代码当下 | agent-eyes `agentSizeWatch` | 文件越堆越长 | CSS 屎山，改一处牵一片 |
+| `git commit` 前 | agent-eyes `agentGuard` 的 `cssVars` | `var(--从未声明的变量)` | 整条声明失效：`z-index` 退回 `auto`、圆角归零，**tsc / ESLint / build 全部照过** |
+| CI | **contrast-guard `check`** | 变量存在，但色值对比度不达标 | 文字看不清，a11y 不过 |
+| 页面跑起来 | **contrast-guard `measure`** | 值都对，但用得太碎 | 每处单看都"对"，合起来就是丑 |
+| 出问题时 | agent-eyes 运行时日志 / 截图 | 运行时错误、登录态、API 失败 | agent 只能靠猜代码 |
+
+递进关系很清楚：**变量不存在**（agent-eyes）→ **变量存在但值不合格**（check）→
+**值都合格但用得失控**（measure）。三种都不报错、都能过构建，只是坏的方式不同。
+
+agent-eyes 的 Roadmap 里提到「DOM 快照不含 computed styles，视觉相关问题仍依赖 CDP 截图」——
+`measure` 抓的正是渲染后的 computed style 统计，补的就是这块。
+
 ## License
 
 [MIT](./LICENSE)
