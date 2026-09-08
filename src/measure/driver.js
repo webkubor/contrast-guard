@@ -93,6 +93,11 @@ async function measureWithPlaywright(url, { timeout = 25, settle = 2 } = {}) {
   }
 }
 
+// 导航失败的最终 URL 判据。抽出来是为了能不起浏览器就测。
+export function navigationFailed(finalURL) {
+  return /^(chrome-error:|about:blank)/.test(finalURL || '')
+}
+
 export async function measure(url, opts = {}) {
   const driver = opts.driver || (await detectDriver())
   if (!driver) {
@@ -107,6 +112,16 @@ export async function measure(url, opts = {}) {
     ? await measureWithEgo(url, opts)
     : await measureWithPlaywright(url, opts)
 
+  // 导航失败时浏览器停在错误页，而错误页**有**可见元素，下面的 visible 兜底抓不到，
+  // 于是量出一份错误页的指标被当成页面指标（2026-09-03 踩过：终端 curl 200、
+  // ego-browser 手开能渲染，cs ui 却出 chrome-error 的数）。按最终 URL 判死。
+  if (navigationFailed(data.url)) {
+    throw new Error(
+      `页面没打开成功，浏览器停在 ${data.url}——量到的是错误页不是你的页面。\n` +
+      '  · 本地预览：确认 dev server 还在跑，端口与路径对得上\n' +
+      '  · localhost 打不开时改用 127.0.0.1（驱动与 server 不在同一解析视角）'
+    )
+  }
   if (!data.visible) {
     throw new Error('页面没有可见元素——可能没加载完、需要登录，或 URL 打错了')
   }
