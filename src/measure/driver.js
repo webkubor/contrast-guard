@@ -71,6 +71,8 @@ await wait(${settle})
 const d = await js(${'`'}${METRIC_SCRIPT}${'`'})
 try { d.url = (await pageInfo()).url } catch (e) { d.url = ${JSON.stringify(url)} }
 cliLog(JSON.stringify(d))
+// 自己开的空间自己收,否则每次 measure 攒一个,只能等 reaper 的 TTL。
+await completeTaskSpace(t.id, { keep: false })
 `
   const raw = await run('ego-browser', ['nodejs'], script)
   const data = lastJSON(raw)
