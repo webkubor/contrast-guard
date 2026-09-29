@@ -1,5 +1,8 @@
 # contrast-guard
 
+> [English](README.en.md) | 中文
+
+
 <!-- bloom-series-nav -->
 
 <table align="center">
