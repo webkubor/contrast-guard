@@ -1,4 +1,36 @@
-# contrast-guard
+<h1 align="center">🛡️ frontend-contrast-guard</h1>
+
+<p align="center">
+  <strong>A full-stack guardian for frontend visuals, contrast gating, and responsive UX.</strong><br>
+  Static color-pair checking · Rendered visual metrics · 4-tier responsive viewport matrix · Toolchain Hub<br>
+  <i>静态查色彩配对 · 渲染后查视觉程度 · 4 阶响应式视口矩阵 · 串联前端生态资产</i>
+</p>
+
+<p align="center">
+  <a href="https://github.com/webkubor/contrast-guard/blob/main/LICENSE"><img src="https://img.shields.io/github/license/webkubor/contrast-guard?style=for-the-badge&color=gold" alt="License"></a>
+  <a href="https://github.com/webkubor/contrast-guard/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/webkubor/contrast-guard/ci.yml?style=for-the-badge&color=4c9a6b" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/frontend-contrast-guard"><img src="https://img.shields.io/npm/v/frontend-contrast-guard?style=for-the-badge&color=cb3837" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/frontend-contrast-guard"><img src="https://img.shields.io/npm/dm/frontend-contrast-guard?style=for-the-badge&color=cb3837" alt="npm downloads"></a>
+  <a href="https://github.com/webkubor/contrast-guard"><img src="https://img.shields.io/github/stars/webkubor/contrast-guard?style=for-the-badge&color=coral" alt="Stars"></a>
+  <a href="https://github.com/webkubor/contrast-guard"><img src="https://img.shields.io/badge/JavaScript-333333?style=for-the-badge" alt="Tech"></a>
+</p>
+
+<p align="center">
+  <a href="README.md">中文</a> · <a href="CHANGELOG.md">Changelog</a> · <a href="docs/frontend-review-standard.md">Frontend Review Standard (SSOT)</a>
+</p>
+
+---
+
+## 🏆 Why This
+
+| Need | Manual visual inspection | Basic WCAG calculator | frontend-contrast-guard |
+|---|:---:|:---:|:---:|
+| Exact fix suggestion on failure | ❌ Blind manual trial-and-error | ❌ Red cross only | ✅ **Keeps hue & chroma, calculates exact target lightness L% ("darken 6 pts")** |
+| Rendered typography & gray level metrics | ❌ Unmeasurable | ❌ Ignores visual degree | ✅ `measure` tracks font-size concentration, gray levels & motion coverage |
+| Mobile viewport & title truncation guard | ❌ Only looks at desktop | ❌ Irrelevant to box model | ✅ **4-tier viewport matrix (390/768/1280/1600) & Anti-Squeeze Law** |
+| Toolchain hub for frontend pipeline | ❌ Zero synergy | ❌ Single isolated tool | ✅ **Integrates Vite plugins, UI components, SSE protocols & visual gates** |
+
+---
 
 <!-- bloom-series-nav -->
 
@@ -6,7 +38,7 @@
 <tr>
 <td align="center" width="33%"><a href="https://github.com/webkubor/typora-Bloom-theme">🌸 Bloom for Typora</a><br/><sub>24 themes</sub></td>
 <td align="center" width="33%"><a href="https://github.com/webkubor/dsh-bloom-theme">🌊 Bloom for DSH</a><br/><sub>4 palettes</sub></td>
-<td align="center" width="33%"><b>🛡️ contrast-guard</b><br/><sub>color guardrail · current</sub></td>
+<td align="center" width="33%"><b>🛡️ frontend-contrast-guard</b><br/><sub>visual & contrast guardrail</sub></td>
 </tr>
 </table>
 

@@ -2,6 +2,20 @@
 
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
+## [0.4.0] - 2026-10-25
+
+### 🚀 重大进化：从单一配色护栏演进为「前端视觉全栈守卫」
+
+承接 owner 2026-10-25 定调：收口对内前端工程与规范体系，CS 系统不再单独维护 UI 细节：
+- **项目与包定位升级为 `frontend-contrast-guard`**：双别名兼容（支持 `frontend-contrast-guard` 与 `contrast-guard` 双命令行调用）。
+- **沉淀前端工程视觉评审与交互自适应规范标准（SSOT）**：新增 `docs/frontend-review-standard.md`，承接原 CS 系统的核心视觉资产：
+  - 视觉计量标准（计算值与真实渲染灰阶、字号集中度、动效覆盖率）；
+  - 多视口响应式自适应度量标准（Ego Lite 4 阶矩阵：390x844 / 768x1024 / 1280x800 / 1600x900）；
+  - 盒模型排版与组件三硬铁律（主标题特权律 Anti-Squeeze、全局浮层避让律 Anti-Occlusion、交互端到端真实闭环）；
+  - 组件选型与弹窗铁律（坚决拒绝原生 alert/confirm/prompt，优先复用成熟组件库）；
+  - 前端全生命周期工具流（插件类、CLI类、npm 研发库三大类资产协同流）。
+- **重构 README**：首屏对齐开源金字塔规范（居中品牌、for-the-badge 徽章、置顶 Why This 痛点对比矩阵）。
+
 ## [0.3.0] - 2026-09-08
 
 主发布：

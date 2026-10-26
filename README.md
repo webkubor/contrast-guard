@@ -1,16 +1,36 @@
-# contrast-guard
+<h1 align="center">🛡️ frontend-contrast-guard</h1>
 
-> [English](README.en.md) | 中文
-
+<p align="center">
+  <strong>前端视觉、对比度与交互自适应全栈守卫。</strong><br>
+  静态查色彩配对 · 渲染后查视觉程度 · 4 阶响应式视口矩阵 · 串联前端生态资产<br>
+  <i>A full-stack guardian for frontend visuals, contrast gating, and responsive UX.</i>
+</p>
 
 <p align="center">
   <a href="https://github.com/webkubor/contrast-guard/blob/main/LICENSE"><img src="https://img.shields.io/github/license/webkubor/contrast-guard?style=for-the-badge&color=gold" alt="License"></a>
   <a href="https://github.com/webkubor/contrast-guard/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/webkubor/contrast-guard/ci.yml?style=for-the-badge&color=4c9a6b" alt="CI"></a>
-  <a href="https://www.npmjs.com/package/contrast-guard"><img src="https://img.shields.io/npm/v/contrast-guard?style=for-the-badge&color=cb3837" alt="npm"></a>
-  <a href="https://www.npmjs.com/package/contrast-guard"><img src="https://img.shields.io/npm/dm/contrast-guard?style=for-the-badge&color=cb3837" alt="npm 下载"></a>
+  <a href="https://www.npmjs.com/package/frontend-contrast-guard"><img src="https://img.shields.io/npm/v/frontend-contrast-guard?style=for-the-badge&color=cb3837" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/frontend-contrast-guard"><img src="https://img.shields.io/npm/dm/frontend-contrast-guard?style=for-the-badge&color=cb3837" alt="npm 下载"></a>
   <a href="https://github.com/webkubor/contrast-guard"><img src="https://img.shields.io/github/stars/webkubor/contrast-guard?style=for-the-badge&color=coral" alt="Stars"></a>
   <a href="https://github.com/webkubor/contrast-guard"><img src="https://img.shields.io/badge/JavaScript-333333?style=for-the-badge" alt="技术栈"></a>
 </p>
+
+<p align="center">
+  <a href="README.en.md">English</a> · <a href="CHANGELOG.md">更新日志</a> · <a href="docs/frontend-review-standard.md">前端视觉与评审规范 (SSOT)</a>
+</p>
+
+---
+
+## 🏆 为什么用它（Why This）
+
+| 痛点场景 | 纯肉眼目测 | 普通 WCAG 计算器 | frontend-contrast-guard |
+|---|:---:|:---:|:---:|
+| 色彩不达标时反推具体改多少 | ❌ 盲调试色 | ❌ 只报不合格红叉 | ✅ **保持色相彩度，直接给出目标明度 L%（“压暗 6 点”）** |
+| 页面字号混乱与灰阶断层 | ❌ 无法度量 | ❌ 不管视觉程度 | ✅ `measure` 统计字号集中度、灰阶层数与动效覆盖率 |
+| 极限窄屏文字截断与盒模型失控 | ❌ 桌面大屏看着好 | ❌ 无关盒模型 | ✅ **4 阶视口矩阵（390/768/1280/1600）与主标题防压榨铁律** |
+| 前端插件、CLI 与开发库协同 | ❌ 零协同 | ❌ 单点孤立 | ✅ **串联 Vite 插件、组件库、流式渲染与视觉门禁流水线** |
+
+---
 
 <!-- bloom-series-nav -->
 
@@ -18,7 +38,7 @@
 <tr>
 <td align="center" width="33%"><a href="https://github.com/webkubor/typora-Bloom-theme">🌸 Bloom for Typora</a><br/><sub>24 套主题</sub></td>
 <td align="center" width="33%"><a href="https://github.com/webkubor/dsh-bloom-theme">🌊 Bloom for DSH</a><br/><sub>4 套配色</sub></td>
-<td align="center" width="33%"><b>🛡️ contrast-guard</b><br/><sub>配色护栏 · 当前</sub></td>
+<td align="center" width="33%"><b>🛡️ frontend-contrast-guard</b><br/><sub>视觉与色彩全栈护栏</sub></td>
 </tr>
 </table>
 

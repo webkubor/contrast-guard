@@ -1,9 +1,10 @@
 {
-  "name": "contrast-guard",
-  "version": "0.3.0",
-  "description": "配色与视觉的双层护栏：check 静态查对比度（零依赖，反推该改成多少），measure 渲染后查视觉程度（字号集中度/灰阶层数/动效覆盖率）",
+  "name": "frontend-contrast-guard",
+  "version": "0.4.0",
+  "description": "前端工程、视觉与色彩全栈守卫：静态查色彩配对、渲染后查视觉程度、4阶多视口与盒模型规范，串联前端插件、工具与开发库。",
   "type": "module",
   "bin": {
+    "frontend-contrast-guard": "./src/cli.js",
     "contrast-guard": "./src/cli.js"
   },
   "exports": {
@@ -11,6 +12,7 @@
   },
   "files": [
     "src",
+    "docs",
     "README.md",
     "LICENSE"
   ],
