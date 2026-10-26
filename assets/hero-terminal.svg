@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1117" />
+      <stop offset="100%" stop-color="#161b22" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <style>
+    .title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; font-size: 13px; fill: #8b949e; text-anchor: middle; font-weight: 500; }
+    .term { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; line-height: 20px; }
+    .prompt { fill: #58a6ff; font-weight: bold; }
+    .cmd { fill: #f0f6fc; font-weight: 600; }
+    .dim { fill: #8b949e; }
+    .err-red { fill: #ff7b72; font-weight: bold; }
+    .warn-yellow { fill: #d29922; }
+    .ok-green { fill: #3fb950; font-weight: bold; }
+    .cyan { fill: #39c5cf; }
+    .magenta { fill: #d2a8ff; }
+    .pill-txt { font-family: -apple-system, BlinkMacSystemFont, monospace; font-size: 11px; font-weight: bold; }
+  </style>
+
+  <!-- Window Frame with Shadow -->
+  <g filter="url(#shadow)">
+    <rect x="20" y="20" width="800" height="460" rx="12" fill="url(#bg-grad)" stroke="#30363d" stroke-width="1.5" />
+  </g>
+
+  <!-- Titlebar -->
+  <path d="M 20,32 A 12,12 0 0,1 32,20 L 808,20 A 12,12 0 0,1 820,32 L 820,56 L 20,56 Z" fill="#161b22" />
+  <line x1="20" y1="56" x2="820" y2="56" stroke="#30363d" stroke-width="1" />
+
+  <!-- Traffic Lights -->
+  <circle cx="44" cy="38" r="6" fill="#ff5f56" stroke="#e0443e" stroke-width="0.5" />
+  <circle cx="64" cy="38" r="6" fill="#ffbd2e" stroke="#dea123" stroke-width="0.5" />
+  <circle cx="84" cy="38" r="6" fill="#27c93f" stroke="#1aab29" stroke-width="0.5" />
+
+  <!-- Title -->
+  <text x="420" y="42" class="title">frontend-contrast-guard — terminal</text>
+
+  <!-- Terminal Content -->
+  <g class="term" transform="translate(45, 90)">
+    <!-- Command 1: Static check -->
+    <text x="0" y="0"><tspan class="prompt">$</tspan> <tspan class="cmd">frontend-contrast-guard</tspan></text>
+    <text x="0" y="26" class="err-red">✗ 1 组配色低于门槛（共检查 48 组）</text>
+
+    <text x="16" y="52" class="dim">theme-src/root-petal.css  链接/主色</text>
+    <text x="32" y="74" class="dim">#e63f9f on #fef6f9  <tspan class="err-red">3.55:1</tspan>  门槛 4.5:1 (WCAG AA)</text>
+
+    <!-- Swatch 1: Failed -->
+    <rect x="360" y="60" width="85" height="18" rx="4" fill="#fef6f9" stroke="#e63f9f" stroke-width="1" />
+    <text x="368" y="73" fill="#e63f9f" class="pill-txt">3.55:1 ❌</text>
+
+    <text x="32" y="100" class="ok-green">→ 自动反推目标值: L=58%（#d0268c，4.55:1，压暗 6 点）</text>
+    <text x="48" y="122" class="magenta">oklch(64% 0.22 350) ➔ 保持色相与彩度不变，只调解明度</text>
+
+    <!-- Swatch 2: Fixed -->
+    <rect x="495" y="87" width="85" height="18" rx="4" fill="#fef6f9" stroke="#d0268c" stroke-width="1.5" />
+    <text x="503" y="100" fill="#d0268c" class="pill-txt">4.55:1 ✅</text>
+
+    <!-- Divider Line -->
+    <line x1="0" y1="148" x2="750" y2="148" stroke="#30363d" stroke-dasharray="4,4" />
+
+    <!-- Command 2: Runtime Measurement -->
+    <text x="0" y="180"><tspan class="prompt">$</tspan> <tspan class="cmd">frontend-contrast-guard measure https://linear.app --vs baseline</tspan></text>
+    
+    <text x="0" y="208" class="cyan">📊 渲染后视觉计量与 4 阶视口硬断言:</text>
+
+    <text x="16" y="232" class="dim">· <tspan class="ok-green">✔ 动效覆盖率</tspan>      : <tspan class="cmd">9.2%</tspan> (达标，基线 &gt;3%)</text>
+    <text x="16" y="254" class="dim">· <tspan class="ok-green">✔ 字号分布集中度</tspan>  : <tspan class="cmd">86.4%</tspan> (前4种覆盖，无碎片化)</text>
+    <text x="16" y="276" class="dim">· <tspan class="ok-green">✔ 灰阶梯度收敛</tspan>    : 背景 19 层 / 文字 4 层 (层级清晰)</text>
+    <text x="16" y="298" class="dim">· <tspan class="ok-green">✔ 4阶视口自适应</tspan>    : 390px / 768px / 1280px / 1600px <tspan class="ok-green">PASS</tspan></text>
+    <text x="16" y="320" class="dim">· <tspan class="ok-green">✔ 主标题特权律</tspan>    : 390px 极限窄屏渲染宽度 &gt;= 80px，无单字母截断</text>
+
+    <text x="0" y="352" class="ok-green">✅ 视觉全栈门禁全绿：色彩无障碍 + 视觉层级 + 响应式盒模型合规</text>
+  </g>
+</svg>

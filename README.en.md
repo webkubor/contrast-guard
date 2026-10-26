@@ -19,6 +19,10 @@
   <a href="README.md">中文</a> · <a href="CHANGELOG.md">Changelog</a> · <a href="docs/frontend-review-standard.md">Frontend Review Standard (SSOT)</a>
 </p>
 
+<p align="center">
+  <img src="assets/hero-terminal.svg" alt="frontend-contrast-guard terminal preview" width="800" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.5);">
+</p>
+
 ---
 
 ## 🏆 Why This

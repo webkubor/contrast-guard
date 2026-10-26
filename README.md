@@ -19,6 +19,10 @@
   <a href="README.en.md">English</a> · <a href="CHANGELOG.md">更新日志</a> · <a href="docs/frontend-review-standard.md">前端视觉与评审规范 (SSOT)</a>
 </p>
 
+<p align="center">
+  <img src="assets/hero-terminal.svg" alt="frontend-contrast-guard terminal preview" width="800" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.5);">
+</p>
+
 ---
 
 ## 🏆 为什么用它（Why This）
