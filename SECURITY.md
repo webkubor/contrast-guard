@@ -12,7 +12,7 @@
 若在 `frontend-contrast-guard` 中发现任何安全漏洞（包括正则拒绝服务 ReDoS、注入风险或敏感路径遍历），请**不要**直接提交公开 Issue。
 
 请通过 GitHub 的官方私有漏洞报告通道提交：
-👉 **[Report a vulnerability](https://github.com/webkubor/contrast-guard/security/advisories/new)**
+👉 **[Report a vulnerability](https://github.com/webkubor/frontend-contrast-guard/security/advisories/new)**
 
 ### 报告应包含的内容
 1. 受影响的版本；

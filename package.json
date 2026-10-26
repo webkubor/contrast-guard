@@ -38,6 +38,14 @@
   ],
   "license": "MIT",
   "author": "webkubor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webkubor/frontend-contrast-guard.git"
+  },
+  "homepage": "https://github.com/webkubor/frontend-contrast-guard",
+  "bugs": {
+    "url": "https://github.com/webkubor/frontend-contrast-guard/issues"
+  },
   "engines": {
     "node": ">=18"
   },

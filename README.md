@@ -7,12 +7,12 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/webkubor/contrast-guard/blob/main/LICENSE"><img src="https://img.shields.io/github/license/webkubor/contrast-guard?style=for-the-badge&color=gold" alt="License"></a>
-  <a href="https://github.com/webkubor/contrast-guard/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/webkubor/contrast-guard/ci.yml?style=for-the-badge&color=4c9a6b" alt="CI"></a>
+  <a href="https://github.com/webkubor/frontend-contrast-guard/blob/main/LICENSE"><img src="https://img.shields.io/github/license/webkubor/frontend-contrast-guard?style=for-the-badge&color=gold" alt="License"></a>
+  <a href="https://github.com/webkubor/frontend-contrast-guard/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/webkubor/frontend-contrast-guard/ci.yml?style=for-the-badge&color=4c9a6b" alt="CI"></a>
   <a href="https://www.npmjs.com/package/frontend-contrast-guard"><img src="https://img.shields.io/npm/v/frontend-contrast-guard?style=for-the-badge&color=cb3837" alt="npm"></a>
   <a href="https://www.npmjs.com/package/frontend-contrast-guard"><img src="https://img.shields.io/npm/dm/frontend-contrast-guard?style=for-the-badge&color=cb3837" alt="npm 下载"></a>
-  <a href="https://github.com/webkubor/contrast-guard"><img src="https://img.shields.io/github/stars/webkubor/contrast-guard?style=for-the-badge&color=coral" alt="Stars"></a>
-  <a href="https://github.com/webkubor/contrast-guard"><img src="https://img.shields.io/badge/JavaScript-333333?style=for-the-badge" alt="技术栈"></a>
+  <a href="https://github.com/webkubor/frontend-contrast-guard"><img src="https://img.shields.io/github/stars/webkubor/frontend-contrast-guard?style=for-the-badge&color=coral" alt="Stars"></a>
+  <a href="https://github.com/webkubor/frontend-contrast-guard"><img src="https://img.shields.io/badge/JavaScript-333333?style=for-the-badge" alt="技术栈"></a>
 </p>
 
 <p align="center">
