@@ -1,9 +1,9 @@
 <h1 align="center">🛡️ frontend-contrast-guard</h1>
 
 <p align="center">
-  <strong>A full-stack guardian for frontend visuals, contrast gating, and responsive UX.</strong><br>
-  Static color-pair checking · Rendered visual metrics · 4-tier responsive viewport matrix · Toolchain Hub<br>
-  <i>静态查色彩配对 · 渲染后查视觉程度 · 4 阶响应式视口矩阵 · 串联前端生态资产</i>
+  <strong>Contrast checks, CSS measurements, and recorded UI review evidence.</strong><br>
+  Static color pairs · Computed-style distributions · Declared review evidence<br>
+  <i>静态查色彩配对 · 采样 CSS 分布 · 核验声明范围内的评审证据</i>
 </p>
 
 <p align="center">
@@ -20,19 +20,19 @@
 </p>
 
 <p align="center">
-  <img src="assets/hero-terminal.svg" alt="frontend-contrast-guard terminal preview" width="800" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.5);">
+  <img src="https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/frontend-contrast-guard/hero-terminal.svg" alt="frontend-contrast-guard terminal preview" width="800" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.5);">
 </p>
 
 ---
 
 ## 🏆 Why This
 
-| Need | Manual visual inspection | Basic WCAG calculator | frontend-contrast-guard |
-|---|:---:|:---:|:---:|
-| Exact fix suggestion on failure | ❌ Blind manual trial-and-error | ❌ Red cross only | ✅ **Keeps hue & chroma, calculates exact target lightness L% ("darken 6 pts")** |
-| Rendered typography & gray level metrics | ❌ Unmeasurable | ❌ Ignores visual degree | ✅ `measure` tracks font-size concentration, gray levels & motion coverage |
-| Mobile viewport & title truncation guard | ❌ Only looks at desktop | ❌ Irrelevant to box model | ✅ **4-tier viewport matrix (390/768/1280/1600) & Anti-Squeeze Law** |
-| Toolchain hub for frontend pipeline | ❌ Zero synergy | ❌ Single isolated tool | ✅ **Integrates Vite plugins, UI components, SSE protocols & visual gates** |
+| Task | Command / protocol | Result and boundary |
+|---|---|---|
+| Fix failing color pairs | `check` | Solves target lightness while retaining hue and chroma for declared pairs |
+| Understand styles used on a page | `measure` | Samples computed-style distributions; neutral observations by default |
+| Validate UI review records | `review` | Checks contract, declared coverage, seven assessments, findings and verification evidence |
+| Organize responsive and interaction review | [Review standard](docs/frontend-review-standard.md) | A person or agent executes the viewport, theme and state protocol; the CLI does not capture this matrix automatically |
 
 ---
 
@@ -65,7 +65,7 @@ OKLCH supported. **Zero dependencies.** The `check` core is 11.6 KB.
       oklch(64% 0.22 350)
 ```
 
-There's also a [`measure`](#measure-rendered-visual-metrics) sub-command for **rendered visual measurement** — `check` verifies the color values, `measure` checks how many font sizes this page actually used, how many grey levels are spread, how many elements have real motion. It needs a browser, but the driver is auto-detected at runtime — **`check` stays zero-dep and runs naked in CI**.
+There's also a [`measure`](#measure-rendered-visual-metrics) sub-command for **rendered visual measurement** — `check` verifies the color values, `measure` checks how many font sizes this page actually used, how many grey levels are spread, how many elements declare transition durations. It needs a browser, but the driver is auto-detected at runtime — **`check` stays zero-dep and runs naked in CI**.
 
 ## Why this exists
 
@@ -97,8 +97,10 @@ Other tools are "give me two colors, I'll compute the ratio" libraries; the real
 ## Install
 
 ```bash
-npm i -D contrast-guard
+npm i -D frontend-contrast-guard
 ```
+
+The package is `frontend-contrast-guard`. Both `frontend-contrast-guard` and `contrast-guard` invoke the same CLI; examples use the shorter alias.
 
 ## Usage
 
@@ -106,6 +108,8 @@ npm i -D contrast-guard
 npx contrast-guard --init     # generate config template
 npx contrast-guard            # check, exit 1 if anything fails
 npx contrast-guard --json     # machine-readable output
+contrast-guard review --init ui-review.json  # create a review template
+contrast-guard review ui-review.json --json  # validate recorded evidence
 ```
 
 `contrast.config.json`:
@@ -132,7 +136,7 @@ npx contrast-guard --json     # machine-readable output
 ### Programmatic API
 
 ```js
-import { check, solveLightness, contrast, parseColor } from 'contrast-guard'
+import { check, solveLightness, contrast, parseColor } from 'frontend-contrast-guard'
 
 const { results, failed } = check({
   files: ['theme-src/root-petal.css'],
@@ -153,38 +157,54 @@ solveLightness('oklch(64% 0.22 350)', bg, 4.5)
 
 `var(--x)` references are auto-dereferenced (up to 5 levels).
 
-## measure: rendered visual metrics
-
-`check` answers **"is this color value right"**, `measure` answers **"how much"** — how many font sizes this page actually used, how many grey levels it spread, how many elements actually animate.
-
-It's needed because **every ugly page passes each check individually**. Each color value is a valid token, each radius is whitelisted, but a screen with 9 font sizes and only 2 grey levels and 11 spacings — each one passes alone, together it's ugly. Binary gates structurally can't catch this.
+## review: product contract and review loop
 
 ```bash
-contrast-guard measure https://linear.app --save linear   # measure a reference site, save baseline
-contrast-guard measure http://localhost:5173 --vs linear  # measure your page, compare item by item
-contrast-guard measure --baselines                        # list saved baselines
+contrast-guard review --init ui-review.json
+contrast-guard review ui-review.json --json
 ```
 
+Successful initialization exits `0`, creates an incomplete template that evaluates to `HOLD`, and does not overwrite an existing file. Evaluation exits **`0`: PASS (recorded evidence satisfies the gate); `1`: HOLD; `2`: input error**, including file access, JSON and schema errors.
+
+Write an explicit design contract: product, user, job, primary action, first-read object, density, signature and constraints. Declare routes, themes, widths and states in `scope`, with a rationale. Default widths are `390 / 768 / 1280 / 1600`, themes are light/dark, and the state is default. This four-viewport × theme × state matrix is a **declared review protocol**, not an automatically captured responsive audit. Add relevant breakpoint boundaries, loading, empty, error and interaction states; record actual width and height in the evidence.
+
+The seven assessment dimensions are:
+
+| JSON dimension | Review focus |
+|---|---|
+| `product-fit` | Fit between the product task, content pattern and density |
+| `hierarchy` | First-read focus and information priority |
+| `typography` | Type roles, readability and hierarchy |
+| `spacing-layout` | Alignment, proximity, spacing, composition and responsive layout |
+| `color-tokens` | Color semantics, readable pairs and token provenance |
+| `components-states` | Component consistency, feedback and state coverage |
+| `distinctiveness` | Task-relevant product identity, imagery and honest content |
+
+Reviewers capture screenshots separately, open and inspect each one, then record screenshot references, revision, route, theme, viewport, state, capture time, reviewer, observation, page `scrollWidth` and `reviewed` status. Each dimension needs evidence, an observation, rationale and passing decision. Findings specify observation, impact, hypothesis, rule ID, a **concrete token/component change and verification method**, rather than a request to “make it polished.”
+
+Resolved findings require comparable before/after iterations: identical route, theme, state, width and height; different revisions; both records marked reviewed; an improved result and passing guards. Also hold data and capture conditions constant and actually verify interactions, readability, keyboard access and reduced-motion behavior. Open critical/major findings, incomplete dimensions, missing declared evidence, recorded page overflow or resolutions without valid verification produce HOLD. Minor findings may remain as explicit follow-up work.
+
+For example (a hypothetical proposal): if action buttons squeeze a long title at 390px in dark mode, change the `ToolRow` title track to `minmax(0, 1fr)` and allow actions to wrap. Compare different revisions with identical data, state and viewport; verify the title and actions remain fully accessible, no page overflow appears, and keyboard access and light mode still work. Record the result after actual verification; a proposal is not an observed improvement.
+
+`review` **reads JSON evidence; it does not browse the page, open or analyze screenshots, or verify screenshot files exist or were inspected**. PASS means evidence completeness and the recorded review decision. It is neither an automated beauty score nor proof that screenshots were actually inspected. See [review CLI fields and a real trial](docs/review-cli.md), and the [Frontend Review Standard](docs/frontend-review-standard.md) for execution, and [Rule Evolution](docs/rule-evolution.md) for versions, positive and counterexamples, the `proposed → trial → stable → deprecated` lifecycle, trial budgets and rollback.
+
+## measure: rendered visual metrics
+
+`measure` samples computed styles on the current page: font-size distributions, font families, foreground/background luminance and transition durations. Motion coverage means the fraction of sampled elements declaring nonzero transition durations; it does not establish that animation played or feedback worked.
+
+```bash
+contrast-guard measure https://linear.app --save linear   # save a reference sample
+contrast-guard measure http://localhost:5173 --vs linear  # compare distributions and deltas
+contrast-guard measure --baselines                        # list baselines
 ```
-Criteria
-  ⚠  motion is almost absent: only 12/6438 elements have transition (0.19%). Defining a motion token ≠ using one
-  ✓  font-size distribution is concentrated: 10 sizes, top 4 cover 96%
-  ⚠  background greys: 60 layers, lots of one-off values bypassing tokens (reference: ~20)
 
-Compared to baseline: linear
-                          this run   linear
-  motion coverage           0.2%      9.0%  ← significant gap
-  background grey levels       60        22
-```
+By default, `src/measure/verdict.js` labels valid samples `observation` and missing samples `unknown`. Only thresholds explicitly supplied by a caller produce configuration warnings. Default results are neutral observations, not aesthetic failures. Font concentration, gray levels, family counts and motion coverage have no universal passing threshold. More motion is not universally better; zero transitions may suit the product and reduced-motion needs.
 
-**Thresholds come from measurement, not gut feel.** During calibration, two intuitive heuristics got thrown out:
+Baseline differences suggest questions to investigate. Similarity to a reference does not prove quality, and a difference is not a failure; explain comparability of tasks, content and sampling conditions. Computed-style distributions do not trace variable provenance and cannot prove hardcoding or token drift. Check definitions, references and component semantic mappings separately.
 
-- **"Fewer font sizes is better" is wrong** — Linear measures 14, more than many mediocre sites. The robust criterion is **distribution concentration** (top-4 coverage). Picking "≤5 sizes" would fail a benchmark site on day one.
-- **Border-radius / shadow / spacing variety has no discriminative power** — the same benchmark had 20 radii and 14 shadows, also high. These become lateral references, never alerts.
+`measure` is not a full responsive or interaction audit and does not calculate true rendered foreground/background contrast pairs. It does not replace checks for transparency, background images, states, focus, keyboard access or screen readers. `check` validates configured color pairs; actual interfaces still need evidence capture and inspection under the review protocol.
 
-So there's one hard usage rule: **measure a reference site and save it as a baseline first, then measure yours.** Without a reference, there's no criterion; "ugly" or "a bit fancier" are zero-information adjectives for a tool or an AI. With a measurable reference, they're not.
-
-You can also attach a **style profile** (`profile` field: typography / color / layout / motion / signatureMoves) capturing what the metrics can't see but a screenshot can. Numbers answer "how far off"; the profile answers "which *kind* of off" — especially `signatureMoves`, which is where style identity comes from. Re-measuring won't overwrite a profile you've already filled in.
+A baseline may include a manually authored `profile` (typography / color / layout / motion / signatureMoves), recording observations from actual image inspection. Re-measuring preserves an existing profile; it remains a reviewer-authored record.
 
 ### Browser driver (zero-dep boundary)
 
@@ -205,20 +225,18 @@ Why Node and not Bun as the official target: this package is a CI guardrail cons
 
 ## Companion: the same front-end quality chain
 
-Together with [**vite-plugin-agent-eyes**](https://github.com/webkubor/vite-plugin-agent-eyes),
-this is two links in the same chain. The failure modes they catch don't overlap — **each link catches what the previous one can't**:
+Together with [**vite-plugin-agent-eyes**](https://github.com/webkubor/vite-plugin-agent-eyes), these tools provide different evidence:
 
-| When | Tool | Catches | If missed |
-|---|---|---|---|
-| While writing code | agent-eyes `agentSizeWatch` | Files piling up | CSS becomes a swamp; one fix breaks three |
-| Before `git commit` | agent-eyes `agentGuard` `cssVars` | `var(--undeclared-variable)` | Whole declaration fails: `z-index` reverts to `auto`, radius to 0, **tsc / ESLint / build all pass** |
-| CI | **contrast-guard `check`** | Variable exists but contrast fails | Text unreadable, a11y fail |
-| Page running | **contrast-guard `measure`** | Values all pass but used chaotically | Each item is "right" alone, ugly together |
-| When something breaks | agent-eyes runtime log / screenshots | Runtime errors, login state, API failures | Agent can only guess |
+| When | Tool | Role |
+|---|---|---|
+| While writing code | agent-eyes `agentSizeWatch` | Flags file size |
+| Before `git commit` | agent-eyes `agentGuard` `cssVars` | Checks undeclared CSS variable references |
+| CI | **contrast-guard `check`** | Checks declared color pairs and suggests fixes |
+| Page running | **contrast-guard `measure`** | Supplies computed-style sample distributions and baseline deltas |
+| UI review | **contrast-guard `review`** | Validates recorded contracts, screenshot evidence, findings and comparable verification |
+| Debugging and evidence capture | agent-eyes runtime logs / screenshots | Supplies runtime errors, login state and API failure clues |
 
-The escalation is clear: **variable doesn't exist** (agent-eyes) → **variable exists but value is wrong** (check) → **value is fine but usage is chaotic** (measure). None of these three error out, none fail the build — they just fail in different ways.
-
-agent-eyes' roadmap mentions "DOM snapshots don't contain computed styles; visual issues still need CDP screenshots" — `measure` collects exactly the rendered computed-style statistics that fills that gap.
+Statistics, screenshots and task verification complement each other. Screenshots still need actual inspection; passing a partial automated check does not establish a complete UI or accessibility audit.
 
 ## License
 

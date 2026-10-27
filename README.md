@@ -1,9 +1,9 @@
 <h1 align="center">🛡️ frontend-contrast-guard</h1>
 
 <p align="center">
-  <strong>前端视觉、对比度与交互自适应全栈守卫。</strong><br>
-  静态查色彩配对 · 渲染后查视觉程度 · 4 阶响应式视口矩阵 · 串联前端生态资产<br>
-  <i>A full-stack guardian for frontend visuals, contrast gating, and responsive UX.</i>
+  <strong>配色对比度护栏、CSS 计量与 UI 评审记录。</strong><br>
+  静态查色彩配对 · 采样 CSS 分布 · 核验声明范围内的评审证据<br>
+  <i>Contrast checks, CSS measurements, and recorded UI review evidence.</i>
 </p>
 
 <p align="center">
@@ -20,19 +20,19 @@
 </p>
 
 <p align="center">
-  <img src="assets/hero-terminal.svg" alt="frontend-contrast-guard terminal preview" width="800" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.5);">
+  <img src="https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/frontend-contrast-guard/hero-terminal.svg" alt="frontend-contrast-guard terminal preview" width="800" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.5);">
 </p>
 
 ---
 
 ## 🏆 为什么用它（Why This）
 
-| 痛点场景 | 纯肉眼目测 | 普通 WCAG 计算器 | frontend-contrast-guard |
-|---|:---:|:---:|:---:|
-| 色彩不达标时反推具体改多少 | ❌ 盲调试色 | ❌ 只报不合格红叉 | ✅ **保持色相彩度，直接给出目标明度 L%（“压暗 6 点”）** |
-| 页面字号混乱与灰阶断层 | ❌ 无法度量 | ❌ 不管视觉程度 | ✅ `measure` 统计字号集中度、灰阶层数与动效覆盖率 |
-| 极限窄屏文字截断与盒模型失控 | ❌ 桌面大屏看着好 | ❌ 无关盒模型 | ✅ **4 阶视口矩阵（390/768/1280/1600）与主标题防压榨铁律** |
-| 前端插件、CLI 与开发库协同 | ❌ 零协同 | ❌ 单点孤立 | ✅ **串联 Vite 插件、组件库、流式渲染与视觉门禁流水线** |
+| 任务 | 命令 / 规范 | 结果与边界 |
+|---|---|---|
+| 配色不达标时给出修复值 | `check` | 保持色相彩度，求目标明度；检查配置中声明的配色对 |
+| 了解页面实际使用的样式 | `measure` | 浏览器采样 computed style 分布，默认输出中性观察 |
+| 核验 UI 评审记录 | `review` | 检查设计契约、声明范围、七维评估、发现与复测证据的完整性 |
+| 组织响应式与交互评审 | [评审标准](docs/frontend-review-standard.md) | 人或 Agent 执行视口、主题与状态协议；CLI 不自动完成该矩阵采集 |
 
 ---
 
@@ -66,7 +66,7 @@
 ```
 
 另有 [`measure`](#measure渲染后视觉计量) 子命令做**渲染后视觉计量**——`check` 查
-色值对不对，`measure` 查这一页用了几种字号、灰阶拉开几层、多少元素真的有动效。
+色值对不对，`measure` 查这一页用了几种字号、灰阶拉开几层、多少元素声明了 transition 时长。
 它需要浏览器，但驱动是运行时探测的，**`check` 仍然零依赖、CI 里裸跑**。
 
 ## 为什么造这个
@@ -106,8 +106,10 @@
 ## 安装
 
 ```bash
-npm i -D contrast-guard
+npm i -D frontend-contrast-guard
 ```
+
+包名为 `frontend-contrast-guard`；`frontend-contrast-guard` 与 `contrast-guard` 两个命令指向同一 CLI，以下使用短别名。
 
 ## 使用
 
@@ -115,6 +117,8 @@ npm i -D contrast-guard
 npx contrast-guard --init     # 生成配置模板
 npx contrast-guard            # 检查，不达标退出码 1
 npx contrast-guard --json     # 机器可读输出
+contrast-guard review --init ui-review.json  # 创建待填写的评审模板
+contrast-guard review ui-review.json --json  # 核验已记录的证据
 ```
 
 `contrast.config.json`：
@@ -143,7 +147,7 @@ npx contrast-guard --json     # 机器可读输出
 ### 编程调用
 
 ```js
-import { check, solveLightness, contrast, parseColor } from 'contrast-guard'
+import { check, solveLightness, contrast, parseColor } from 'frontend-contrast-guard'
 
 const { results, failed } = check({
   files: ['theme-src/root-petal.css'],
@@ -166,47 +170,54 @@ solveLightness('oklch(64% 0.22 350)', bg, 4.5)
 
 `var(--x)` 引用会自动解引用（最多 5 层）。
 
-## measure：渲染后视觉计量
-
-`check` 查**对不对**（这个色值达不达标），`measure` 查**多少**（这一页实际用了
-几种字号、灰阶拉开几层、多少元素真的有动效）。
-
-需要它是因为：**丑的每一处单看往往都"对"**。每个色值都是合法 token、每个圆角都在
-白名单里，但一屏 9 种字号、灰阶只拉开 2 层、间距 11 种——每条都过检，合起来就是丑。
-二值门禁结构上抓不到这个。
+## review：记录产品契约与评审闭环
 
 ```bash
-contrast-guard measure https://linear.app --save linear   # 量参照站，存基线
-contrast-guard measure http://localhost:5173 --vs linear  # 量自己的页面，逐项对比
-contrast-guard measure --baselines                        # 列出已存基线
+contrast-guard review --init ui-review.json
+contrast-guard review ui-review.json --json
 ```
 
+初始化成功退出 `0`，生成的空模板仍待补充，评估为 `HOLD`，且初始化不会覆盖现有文件。评估退出码为 **`0`：PASS（记录完整且满足门禁）；`1`：HOLD；`2`：输入错误**（包括文件读取、JSON 或结构错误）。
+
+先填写显式设计契约：产品、用户、任务、主操作、首读对象、密度、视觉辨识点与约束。再声明 `scope.revision` 目标版本及 `scope` 中的路由、主题、宽度和状态，并解释选取理由。默认宽度为 `390 / 768 / 1280 / 1600`，主题为 light/dark，状态为 default；这是四视口×主题×状态的**评审协议**，不是 CLI 自动捕获的响应式审计。按产品补充临界宽度、加载、空、错误与交互状态；证据另记实际宽高。
+
+七个评估维度分别是：
+
+| JSON 维度 | 评审重点 |
+|---|---|
+| `product-fit` | 产品任务、内容模式与密度是否相符 |
+| `hierarchy` | 首读焦点与信息优先级 |
+| `typography` | 字体角色、可读性与层级 |
+| `spacing-layout` | 对齐、邻近、间距、构图与响应式布局 |
+| `color-tokens` | 色彩语义、配色可读性与 token 来源 |
+| `components-states` | 组件一致性、交互反馈与状态覆盖 |
+| `distinctiveness` | 服务任务的产品特色、图像与诚实内容 |
+
+截图由评审者另行采集并逐张打开检查，再填写证据的截图引用、版本、路由、主题、视口、状态、采集时间、检查者、观察、页面 `scrollWidth` 和 `reviewed` 状态。每个维度要有关联证据、观察、理由及通过决定。发现要写清观察、影响、假设、规则 ID、**具体 token/组件改动与验证方法**，避免只写“更精致”。
+
+已解决的发现需要可比的 before/after 迭代：路由、主题、状态、宽高相同，版本不同，两份证据均已记录为 reviewed，结果为 improved 且保护条件通过。还应固定数据与捕获条件，并实际复验交互、可读性、键盘与减弱动效行为。开放的 critical/major 问题、未完成维度、缺失范围证据、记录的全页溢出或无有效复测的解决声明会使结果 HOLD；minor 可保留为明确的后续事项。
+
+例如（假设性方案）：390px 深色主题的长标题被按钮挤压时，修改 `ToolRow` 的标题列为 `minmax(0, 1fr)`，让操作区换行；用相同数据、状态与宽高的不同版本截图对照，检查标题及操作完整可达、全页无横向溢出，并复验键盘和浅色主题。完成真实验证后再记录结果，不把方案写成已证实的改善。
+
+`review` **读取 JSON 证据，不自行浏览页面、打开或分析截图，也不验证截图文件是否存在或确实被检查**。PASS 仅表示证据完整性与已记录的评审决定，不是自动美感评分，也不是截图已被实际检查的证明。字段和真实试跑见 [review CLI](docs/review-cli.md)；完整执行方式见 [前端 UI 评审标准](docs/frontend-review-standard.md)；规则的版本、正反例、`proposed → trial → stable → deprecated` 生命周期、试验预算与回滚见 [规则演进](docs/rule-evolution.md)。
+
+## measure：渲染后视觉计量
+
+`measure` 采样当前页面的 computed style，统计字号分布、字体族、前景/背景亮度、transition 时长等；动效覆盖指声明了非零 transition 时长的采样元素比例，不证明动画实际播放或交互反馈有效。
+
+```bash
+contrast-guard measure https://linear.app --save linear   # 保存参照采样
+contrast-guard measure http://localhost:5173 --vs linear  # 对比分布与差值
+contrast-guard measure --baselines                        # 列出基线
 ```
-判据
-  ⚠  动效几乎不存在：仅 12/6438 个元素带 transition（0.19%）。定义了 motion token ≠ 用上了
-  ✓  字号分布集中：10 种，前 4 种覆盖 96%
-  ⚠  背景灰阶 60 层，大量一次性色值绕过了 token（参照站量级约 20）
 
-对比基线 linear
-                         本次       linear
-  动效覆盖率             0.2%         9.0%  ← 差距显著
-  背景灰阶层               60           22
-```
+`src/measure/verdict.js` 默认把有效采样标为 `observation`，缺少有效采样标为 `unknown`；只有调用方显式传入阈值时才产生相应配置提醒。默认结果是中性观察，不是审美失败。字号集中度、灰阶层数、字体数量或动效覆盖率没有跨产品通用及格线；更多动效不必然更好，零过渡也可以符合产品与 reduced-motion 需求。
 
-**阈值由实测校准，不是拍脑袋。** 校准时推翻了两个直觉判据：
+基线差异用于提出待调查问题。与参照站接近不证明设计质量，不同也不等于失败；选择参照时应解释任务、内容与采样条件的可比性。computed style 分布不含变量来源追踪，无法据此证明硬编码或 token 漂移，需要核对定义、引用与组件语义映射。
 
-- **「字号种类越少越好」是错的**——Linear 实测 14 种，比很多平庸站点还多。
-  稳健的判据是**分布集中度**（前 4 种覆盖率）。凭空定「≤5 种」，第一天就会把标杆站判成不及格。
-- **圆角/阴影/间距的种类数没有判别力**——同一标杆站圆角 20 种、阴影 14 种同样高。
-  这类只作横向参考，不报警。
+`measure` 不执行完整响应式或交互审计，也不计算真实渲染后的前景/背景配对对比度；它不替代对透明叠加、背景图、状态、焦点、键盘或读屏的验证。`check` 校验配置配色对；真实界面仍按评审协议采集和检查证据。
 
-所以用法上有个硬要求：**先量参照站存成基线，再量自己的页面**。没有参照物就没有判据，
-「丑」「高级一点」这类形容词对工具和 AI 都是零信息量，换成可观测的参照站才有意义。
-
-基线里还可以补一段**风格画像**（`profile` 字段：typography / color / layout / motion /
-signatureMoves），记录计量抓不到、只能看图得出的东西。数字回答「差多少」，
-画像回答「差在哪种气质」——尤其是 signatureMoves，那是风格辨识度的来源。
-重新计量不会覆盖已填的画像。
+基线可手工补充 `profile`（typography / color / layout / motion / signatureMoves），记录实际看图后的观察；重新计量会保留已有画像。它仍是评审者填写的记录。
 
 ### 浏览器驱动（零依赖边界）
 
@@ -230,22 +241,18 @@ signatureMoves），记录计量抓不到、只能看图得出的东西。数字
 
 ## 配套：同一条前端质量链路
 
-和 [**vite-plugin-agent-eyes**](https://github.com/webkubor/vite-plugin-agent-eyes)
-是一条链路上的两环，拦的失败模式不重叠——**每一环拦的都是前一环拦不住的东西**：
+和 [**vite-plugin-agent-eyes**](https://github.com/webkubor/vite-plugin-agent-eyes) 配合时，各工具提供不同证据：
 
-| 时机 | 工具 | 拦什么 | 漏掉会怎样 |
-|---|---|---|---|
-| 写代码当下 | agent-eyes `agentSizeWatch` | 文件越堆越长 | CSS 屎山，改一处牵一片 |
-| `git commit` 前 | agent-eyes `agentGuard` 的 `cssVars` | `var(--从未声明的变量)` | 整条声明失效：`z-index` 退回 `auto`、圆角归零，**tsc / ESLint / build 全部照过** |
-| CI | **contrast-guard `check`** | 变量存在，但色值对比度不达标 | 文字看不清，a11y 不过 |
-| 页面跑起来 | **contrast-guard `measure`** | 值都对，但用得太碎 | 每处单看都"对"，合起来就是丑 |
-| 出问题时 | agent-eyes 运行时日志 / 截图 | 运行时错误、登录态、API 失败 | agent 只能靠猜代码 |
+| 时机 | 工具 | 作用 |
+|---|---|---|
+| 写代码当下 | agent-eyes `agentSizeWatch` | 提醒文件规模 |
+| `git commit` 前 | agent-eyes `agentGuard` 的 `cssVars` | 检查未声明的 CSS 变量引用 |
+| CI | **contrast-guard `check`** | 检查声明的配色对并给出修复值 |
+| 页面运行时 | **contrast-guard `measure`** | 提供 computed style 采样分布与基线差值 |
+| UI 评审 | **contrast-guard `review`** | 核验手工记录的契约、截图证据、发现与可比复测 |
+| 排障与采证 | agent-eyes 运行时日志 / 截图 | 提供运行时错误、登录态与 API 失败线索 |
 
-递进关系很清楚：**变量不存在**（agent-eyes）→ **变量存在但值不合格**（check）→
-**值都合格但用得失控**（measure）。三种都不报错、都能过构建，只是坏的方式不同。
-
-agent-eyes 的 Roadmap 里提到「DOM 快照不含 computed styles，视觉相关问题仍依赖 CDP 截图」——
-`measure` 抓的正是渲染后的 computed style 统计，补的就是这块。
+统计、截图与任务验证互相补充；截图仍需实际打开检查，局部自动检查通过不外推为完整 UI 或无障碍验收。
 
 ## License
 
