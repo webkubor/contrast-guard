@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Contextual review hypotheses, not automatic beauty scores. Trial rules require screenshot evidence and independent validation before promotion.",
+  "rules": [
+    {
+      "id": "typography.command-legibility",
+      "version": "0.1.0",
+      "status": "trial",
+      "dimension": "typography",
+      "appliesWhen": "A command is a primary reading or copying object in a narrow layout.",
+      "observation": "A short command word is split into isolated characters while nearby controls keep fixed width.",
+      "impact": "The user must reconstruct the command instead of scanning it as a coherent object.",
+      "hypothesis": "Allocate command and action separate narrow-screen tracks before shrinking type.",
+      "changes": ["Move copy action below the command at narrow widths.", "Preserve command tokens; use explicit local scrolling for unusually long commands.", "Check component padding, action width and command typography tokens together."],
+      "positiveCase": "SuperCLI 390px light default, observed 2026-10-26: final g in wrangler wraps to its own line. This is a failure case motivating the rule, not a validated improved result.",
+      "counterexample": "An intentionally multiline shell pipeline with complete tokens may improve readability; a single line is not universally required.",
+      "verify": ["Same build, route, theme and width; inspect short and long commands.", "Keyboard focus and copy feedback stay reachable.", "No page overflow; declared command-local scrolling is acceptable."],
+      "promotionEvidence": "Needs comparable before/after screenshots, action checks and an independent reviewer; current evidence only supports a trial hypothesis.",
+      "sources": ["https://supercli.site/", "review-cli.md"]
+    },
+    {
+      "id": "tokens.semantic-traceability",
+      "version": "0.1.0",
+      "status": "trial",
+      "dimension": "color-tokens",
+      "appliesWhen": "The product declares a token system shared across components or themes.",
+      "observation": "The same semantic role drifts across components or states without a documented reason.",
+      "impact": "Hierarchy and status become inconsistent, and changes acquire hidden side effects.",
+      "hypothesis": "Trace primitive value → semantic alias → component/state usage before adding new values.",
+      "changes": ["Document purpose, type, source, theme and component consumer.", "Use semantic roles for text, surfaces, actions and status.", "Keep product-specific exceptions explicit and review their impact."],
+      "positiveCase": "A repeated primary action acquires an unrelated hover color through a local literal; source trace can demonstrate the drift.",
+      "counterexample": "Several semantic aliases can intentionally resolve to the same value. Equal computed colors do not prove redundant tokens, and many computed colors do not prove source literals.",
+      "verify": ["Inspect token definitions and actual component references, not just computed color counts.", "Check normal, focus, selected and disabled states in declared themes."],
+      "promotionEvidence": "Requires source-traced examples and counterexamples from more than one product type.",
+      "sources": ["https://www.designtokens.org/TR/2025.10/format/", "frontend-review-standard.md"]
+    },
+    {
+      "id": "hierarchy.first-read-follows-task",
+      "version": "0.1.0",
+      "status": "proposed",
+      "dimension": "hierarchy",
+      "appliesWhen": "The product contract names a first-read object and primary action.",
+      "observation": "Repeated decoration or equal-weight secondary objects compete with the user's first decision.",
+      "impact": "The user must search for the next useful action despite the page appearing polished.",
+      "hypothesis": "Redistribute size, position, contrast and spacing in favor of the task's first decision.",
+      "changes": ["Promote the first-read object rather than enlarging every component.", "Group supporting metrics and separate primary from secondary actions.", "Retain a distinctive domain object or interaction rather than adding generic decoration."],
+      "positiveCase": "A monitoring screen hides the failed job and recovery action beneath four equal KPI cards; this is a hypothetical case to validate.",
+      "counterexample": "An editorial cover may deliberately prioritize atmosphere and title before navigation; copying monitoring-screen density would damage that task.",
+      "verify": ["A new reviewer identifies the intended object and next action in the screenshot.", "Preserve the same task at narrow widths and in long-content states."],
+      "promotionEvidence": "Needs real task-oriented studies and independently reviewed before/after cases; hypothetical examples alone are insufficient.",
+      "sources": ["frontend-review-standard.md", "rule-evolution.md"]
+    },
+    {
+      "id": "assets.project-visual-is-recognisable",
+      "version": "0.1.0",
+      "status": "trial",
+      "dimension": "distinctiveness",
+      "appliesWhen": "A project directory renders one representative visual per entry and the visitor must recognise which project it belongs to.",
+      "observation": "The entry's visual renders successfully and passes low-level checks, yet shows an abstract gradient, a mood render or a generic mascot that identifies no particular product.",
+      "impact": "The visitor sees a polished but meaningless image and cannot connect the card to the project it claims to represent.",
+      "hypothesis": "Classify the visual by what it depicts, then route only the unrecognisable ones to human review; never let a model verdict decide on its own.",
+      "changes": ["Classify the visual into brand mark, product-form render, interface screenshot, abstract mood image or text-only cover.", "Treat the model's classification as a lead, not a verdict; a reviewer confirms or overturns it.", "Judge emptiness by decoded-pixel statistics rather than byte-level entropy."],
+      "positiveCase": "Blog project directory, 24 entries audited 2026-10-29 on a local 4B VLM: 9 passed outright, 6 were flagged for human review, 3 failed low-level checks and 6 images failed to load. Confirmed true positives by eye include codex-manager (a shiba-inu sticker that identifies no product), museav and museav-mcp (abstract renders). Confirmed false positives include usage-statusline (a real colour-card render) and kyvault (a promo image whose caption names the tool), so the flag cannot be treated as a verdict.",
+      "counterexample": "A deliberate editorial or portfolio cover may legitimately prioritise atmosphere over legibility of the product; a reading-oriented site can ship an abstract visual without losing meaning. Product-form renders that omit any real interface can still be the correct choice for a tool that has no interface.",
+      "verify": ["Same entry set, same build and same thumbnails across runs.", "A reviewer who has not seen the model's answer classifies each flagged image independently.", "Re-run the classification at least three times and confirm the category does not drift."],
+      "promotionEvidence": "Evidence currently covers 24 entries on one product surface with a single reviewer and no independent second reviewer, so the rule stays at trial. Needs cross-product checks and an independent reviewer before promotion.",
+      "sources": ["frontend-review-standard.md", "rule-evolution.md", "blog audit-visuals.mjs"]
+    }
+  ]
+}
