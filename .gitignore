@@ -2,3 +2,5 @@ node_modules/
 *.tgz
 .DS_Store
 .contrast-guard/
+.use_count
+.last_used
