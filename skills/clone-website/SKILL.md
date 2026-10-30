@@ -7,7 +7,7 @@ user-invocable: true
 type: procedure
 category: coding
 platform: shared
-origin: CortexOS skills/software-development/clone-website 是这份技能的 canonical source
+origin: Migrated from CortexOS clone-website; maintained here under the Frontend Flow
 ---
 
 通用前端研发唯一入口：[Frontend Flow](../../docs/frontend-flow.md)。项目品牌、组件库、域名和发布规则从项目读取。
@@ -44,9 +44,9 @@ If the user provides additional instructions (specific fidelity level, customiza
 
 ## Pre-Flight
 
-1. **Browser automation is required.** Prefer a browser MCP (Chrome MCP, Playwright MCP, Browserbase MCP, Puppeteer MCP) if one is connected. **If none, use the `ego-browser` skill** (installed in this CortexOS env) — it provides everything this skill needs: `openOrReuseTab`/`gotoAndWait` (navigate), `captureScreenshot`, `snapshotText` (DOM/AX tree), and `js(...)` to run `getComputedStyle()` / read text / download assets / click·hover·scroll. Drive it via `ego-browser nodejs <<'EOF' ... EOF`. This skill cannot work without browser automation.
+1. **Browser automation is required.** Prefer a browser MCP (Chrome MCP, Playwright MCP, Browserbase MCP, Puppeteer MCP) if one is connected. **If none, discover an available browser driver such as `ego-browser` — it provides everything this skill needs: `openOrReuseTab`/`gotoAndWait` (navigate), `captureScreenshot`, `snapshotText` (DOM/AX tree), and `js(...)` to run `getComputedStyle()` / read text / download assets / click·hover·scroll. Drive it via `ego-browser nodejs <<'EOF' ... EOF`. This skill cannot work without browser automation.
 2. Parse `$ARGUMENTS` as one or more URLs. Normalize and validate each URL; if any are invalid, ask the user to correct them before proceeding. For each valid URL, verify it is accessible via your browser MCP tool.
-3. **Scaffold the working project from the bundled template.** The Next.js 16 + shadcn/ui + Tailwind v4 scaffold lives at `~/dev/CortexOS/templates/ai-website-cloner`. If the current directory is not already that scaffold, copy it into a fresh working dir (e.g. `clone-<hostname>/`), `cd` in, then run `npm install`. Verify it builds: `npm run build`. Each clone is its own project — never build into the template itself.
+3. **Use the project stack and approved scaffold.** Inspect its package scripts, component library and conventions first. For a new project choose a suitable stack from the brief, isolate each clone in its own directory, install dependencies with its package manager and verify its build. No private template or component library is required.
 4. Create the output directories if they don't exist: `docs/research/`, `docs/research/components/`, `docs/design-references/`, `scripts/`. For multiple clones, also prepare per-site folders like `docs/research/<hostname>/` and `docs/design-references/<hostname>/`.
 5. When working with multiple sites in one command, optionally confirm whether to run them in parallel (recommended, if resources allow) or sequentially to avoid overload.
 
@@ -149,7 +149,7 @@ Extract these from the page before doing anything else:
 
 **Fonts** — Inspect `<link>` tags for Google Fonts or self-hosted fonts. Check computed `font-family` on key elements (headings, body, code, labels). Document every family, weight, and style actually used. Configure them in `src/app/layout.tsx` using `next/font/google` or `next/font/local`.
 
-**Colors** — Extract the site's color palette from computed styles across the page. Update `src/app/globals.css` with the target's actual colors in the `:root` and `.dark` CSS variable blocks. Map them to shadcn's token names (background, foreground, primary, muted, etc.) where they fit. Add custom properties for colors that don't map to shadcn tokens.
+**Colors** — Extract the site's color palette from computed styles across the page. Update `src/app/globals.css` with the target's actual colors in the `:root` and `.dark` CSS variable blocks. Map them to the project semantic token roles and add roles only where needed.
 
 **Favicons & Meta** — Download favicons, apple-touch-icons, OG images, webmanifest to `public/seo/`. Update `layout.tsx` metadata.
 
@@ -403,7 +403,7 @@ Based on complexity, dispatch builder agent(s) in worktree(s):
 **What every builder agent receives:**
 - The full contents of its component spec file (inline in the prompt — don't say "go read the spec file")
 - Path to the section screenshot in `docs/design-references/`
-- Which shared components to import (`icons.tsx`, `cn()`, shadcn primitives)
+- Which shared components to import (project icons, utilities and approved primitives)
 - The target file path (e.g., `src/components/HeroSection.tsx`)
 - Instruction to verify with `npx tsc --noEmit` before finishing
 - For responsive behavior: the specific breakpoint values and what changes

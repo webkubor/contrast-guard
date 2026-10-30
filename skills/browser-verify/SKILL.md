@@ -1,6 +1,6 @@
 ---
 name: browser-verify
-description: UI 视觉验证方法论（截图取证/双主题/移动端/白屏诊断/读屏上值的 DoD 流程）。驱动浏览器本体优先走 ego-browser（继承登录态、隔离空间），本 skill 的价值是"验什么、怎么算验过"的清单与技巧；ego-browser 不可用时才退回其内置的 browser-harness(CDP) 驱动。触发："看渲染 / 截图验证 / UI DoD / 双主题核对 / 白屏排查"。
+description: UI 视觉验证方法论（截图取证/双主题/移动端/白屏诊断/读屏上值的 DoD 流程）。使用当前环境可用的浏览器能力，本 skill 提供验收清单与诊断技巧；browser-harness(CDP) 是可选驱动示例。触发："看渲染 / 截图验证 / UI DoD / 双主题核对 / 白屏排查"。
 version: 1.0.0
 ---
 
@@ -9,7 +9,7 @@ version: 1.0.0
 
 # 浏览器控制 / UI 可视化验证（browser-harness）
 
-跨 Agent 的浏览器控制能力，依赖 **`browser-harness`**（CDP 直控本机 Chrome）。它是命令行工具，Claude / Codex / Gemini 都能 shell 调用——不绑定某个 Agent 专属的浏览器 MCP，所以跨 Agent。
+优先使用当前环境提供的浏览器能力；以下 fallback 示例使用 **`browser-harness`**（CDP 直控本机 Chrome）。它是命令行工具，Claude / Codex / Gemini 都能 shell 调用——不绑定某个 Agent 专属的浏览器 MCP，所以跨 Agent。
 
 ## 何时用
 
@@ -19,7 +19,7 @@ version: 1.0.0
 
 ## 调用形态（heredoc，python 内核）
 
-内网 / 本地一律带 `NO_PROXY` 防 Clash 劫持：
+代理配置影响本地连接时，按当前环境设置 `NO_PROXY`；以下仅为 browser-harness 可用时的示例：
 
 ```bash
 NO_PROXY=127.0.0.1,localhost browser-harness <<'PY'

@@ -11,7 +11,7 @@
 ### 1. 伪造数据冒充真实数据（Fabrication posing as real data）
 
 编造的人设（`a.chen@grid.co`）、编造的遥测（`GRID.FREQ 59.998 Hz`、`BUILD 8.2.0-rc3`）。
-**没有真实内容就留空**——绝不用假数据把页面撑得像活的。
+生产主张必须真实；演示和原型可以使用明确标记的合成数据，不伪装成真实客户或遥测。
 
 ### 2. Filler 标签（Filler labels）
 
@@ -27,7 +27,7 @@
 ### 4. 用 Unicode 字形冒充图标（Unicode glyphs as icon substitutes）
 
 `▣ Dashboard`、`◊ Market Navigator`。
-**要么用真实图标集，要么什么都不用。ASCII art 不是图标学。**
+**按项目图标系统与语义选择；文字字形或 ASCII 艺术可以有意采用，但须检查跨平台显示和可访问名称。**
 
 ---
 
@@ -44,6 +44,5 @@
 ## 三、与其他规则的合流
 
 - **B8 内容真实性**管「写得真」；本文件管「不许假」与「不许 AI 味」。两者叠加使用。
-- **字体白名单**（B1）以 `landing-page-design` 为准；只有显式启用
-  `references/brand-anchors.md` 的品牌差异化路径时才覆盖它。
-- **CSS 架构**（token 唯一尺子、单尺规原则）见 `references/single-ruler-principle.md`。
+- 字体、图标、文案气质由项目契约决定，不设全局白名单。
+- token 一致性见[单尺原则](single-ruler-principle.md)。

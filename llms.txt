@@ -2,6 +2,12 @@
 
 > 配色对比度 CI 护栏、浏览器 computed style 计量与 UI 评审记录核验。支持 OKLCH，对配置配色对给出具体 lightness 修复值。
 
+## 唯一前端方法入口
+
+- 完整 Flow：docs/frontend-flow.md；按需技能：skills/*/SKILL.md。
+- UI 还原：skills/ui-restore/SKILL.md，参考材料→同条件截图→computed style→CSS/token 来源→最小修复→影响面复测。
+- 项目品牌与环境资产留在项目；CS 仅指向本仓，不另立规范。
+
 ## 安装与命令
 
 - 安装：`npm i -D github:webkubor/frontend-contrast-guard`（体系惯例经 git 分发，不发布 npm）。`frontend-contrast-guard` 与 `contrast-guard` 为同一 CLI 的双别名。

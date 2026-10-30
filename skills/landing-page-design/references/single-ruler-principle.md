@@ -1,77 +1,18 @@
-# Single-Ruler Principle — CSS Token + Tailwind 架构铁律
+# 单尺原则：统一语义 token 的决策来源
 
-> 来源：云砚存绘项目样式审计复盘
-> 核心问题：样式混乱的根因不是"没对齐某个设计系统"，而是**两套刻度打架没收口**。
+由项目样式审计复盘抽象：同一语义同时从框架默认值和自定义值取值，且没有映射，会导致圆角、阴影、色彩漂移。目标是减少冲突来源，不是强制某种框架或 CSS 变量形式。
 
-## 根因诊断
+## 诊断
 
-样式审计查出圆角 `12/13/14/16/18/20` 六选一、`shadow-xs` vs 自定义阴影、`bg-blue-500` vs `--brand-base` 满天飞。
+列出同语义的实际 computed style、组件 token、框架主题和自定义覆盖。例如卡片圆角在一处来自框架刻度，在另一处来自项目 token；先确认这是否有意区分，再决定合并。
 
-**根因：** 项目里同时用了两把尺子：
-- 尺子A：Tailwind 内置刻度（`rounded-2xl=16px`、`shadow-sm`、`bg-blue-500`）
-- 尺子B：自定义 CSS Token（`--radius-lg=18px`、`--mg-*`）
+## 收口方法
 
-写代码的人随手抓哪把都行，两把刻度还对不上（16≠18），结果就是全局不一致。
+1. 确认项目已选设计系统及其主题入口。可以采用组件库 token、CSS 自定义属性、构建期 token 或框架主题。
+2. 为共享语义指定唯一决策来源，通过项目当前版本支持的主题机制映射到消费者。布局计算、动态内联样式和有意例外应说明用途，不能机械禁止。
+3. 在组件中复用语义角色，如 surface、text、focus、card-radius；示例名称和值不是全局默认。
+4. 用渲染后样式抽查映射是否生效，验证同语义一致和例外边界。若值得自动化，再加适合项目的 lint。
 
-## 正解：单尺原则
+选用 Material、Tailwind 或其他组件系统都可以；问题在于语义重叠却不受控。不同框架版本的配置语法不同，实施前读项目配置及当前文档。
 
-**项目内只允许一把尺子——自定义 CSS 变量。Tailwind 仅作为原子类语法糖，所有刻度必须映射到 Token。**
-
-### 实现方式
-
-1. **`tokens.css`** 定义所有视觉变量（唯一真源）：
-```css
-:root {
-  --yy-radius-sm: 6px;
-  --yy-radius-md: 12px;
-  --yy-radius-lg: 18px;
-  --yy-shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-  --yy-accent-red: #C1272D;
-}
-```
-
-2. **`tailwind.config.js`** 强制映射（覆盖默认值，不 extend）：
-```js
-module.exports = {
-  theme: {
-    extend: {
-      borderRadius: {
-        'yy-sm': 'var(--yy-radius-sm)',
-        'yy-md': 'var(--yy-radius-md)',
-        'yy-lg': 'var(--yy-radius-lg)',
-      },
-      colors: {
-        'yy-red': 'var(--yy-accent-red)',
-      },
-    },
-  },
-};
-```
-
-3. **组件中只用映射后的类名**：
-```html
-<!-- ✅ 正确：走 Token -->
-<div class="rounded-yy-lg bg-yy-red shadow-yy-sm">
-
-<!-- ❌ 错误：Tailwind 内置刻度 -->
-<div class="rounded-2xl bg-red-500 shadow-sm">
-```
-
-## 明确禁令
-
-| 禁令 | 原因 |
-|------|------|
-| ❌ 不对齐 Material 3 (M3) | M3 是 Google 完整设计语言体系（tonal 调色、三级 token、state layer...）。对齐它 = 重写 + 强行套安卓味，与"反 AI 味、克制高级感"直接冲突 |
-| ❌ 禁止 `bg-blue-500`/`rounded-xl`/`shadow-sm` 等 Tailwind 内置值 | 双尺打架根因 |
-| ❌ 禁止内联 `style="..."` | 脱离 Token 体系 |
-| ❌ 禁止"自定义 + Tailwind 混用却不统一刻度" | 问题不在于混用，在于没收口 |
-
-## Lint 拦截
-
-在 CI/ESLint 中配置规则，拦截非项目前缀的 Tailwind 类：
-- 允许：`yy-*`、`w-*`、`h-*`、`flex`、`grid`、`p-*`、`m-*` 等布局类
-- 拦截：`bg-blue-*`、`bg-red-*`（非 `yy-` 前缀的颜色）、`rounded-[0-9]xl`（非 `yy-` 前缀的圆角）、`shadow-[sm|md|lg]`（非 `yy-` 前缀的阴影）
-
-## 适用场景
-
-任何使用 **Tailwind + 自定义设计系统** 的项目。当项目有自己的视觉方向（非套用现成 UI 库）时，必须执行单尺原则。
+完整评审遵循[评审标准](../../../docs/frontend-review-standard.md)。

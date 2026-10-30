@@ -9,6 +9,8 @@ version: 1.0.0
 
 # Apple Design
 
+Optional reference for projects choosing physical, fluid interaction. Apple-specific materials, font choices and numeric spring values below are examples from this design tradition, not global defaults or acceptance gates. Preserve project visual language and validate gestures, accessibility and performance in its supported environments.
+
 How Apple builds interfaces that stop feeling like a computer and start feeling like an extension of you. This knowledge comes from Apple's WWDC design talks — chiefly *Designing Fluid Interfaces* (WWDC 2018) — distilled and translated into the web platform (CSS, Pointer Events, `requestAnimationFrame`, spring libraries like Motion/Framer Motion).
 
 The through-line: **an interface feels alive when motion starts from the current on-screen value, inherits the user's velocity, projects momentum forward, and can be grabbed and reversed at any instant.** Springs are the tool that makes all of this natural, because they are inherently interruptible and velocity-aware.

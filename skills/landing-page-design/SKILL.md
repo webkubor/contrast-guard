@@ -1,6 +1,6 @@
 ---
 name: landing-page-design
-description: "Complete system for building high converting landing pages: intake questions, page structure, layout selection, conversion copywriting, SEO, plus strict visual rules for typography, spacing, corner radius, backgrounds, hero layout, icons, and motion. Use this skill whenever building, editing, styling, reviewing, or writing copy for ANY landing page, marketing site, web UI, page section, component, or prototype, even when the user does not mention design, conversion, tokens, or a design system. Always consult it before choosing page sections, headlines, CTAs, fonts, font sizes, spacing values, border radii, background colors, icons, or transitions."
+description: "Complete system for building high converting landing pages: intake questions, page structure, layout selection, conversion copywriting, SEO, plus project-led visual decisions. Use for landing page strategy, marketing structure, conversion copy and optional visual recipes."
 version: 1.0.0
 license: MIT (上游 https://github.com/elayadesign/ai-design-skills)
 ---
@@ -14,34 +14,23 @@ A landing page is not a homepage. A homepage serves multiple intents. A landing 
 
 **one offer → one audience → one primary action.**
 
-This skill has two halves. **Part A** decides what the page says and how it is structured. **Part B** is the non negotiable visual system. Work through A before touching B.
+This skill has two halves. **Part A** decides what the page says and how it is structured. **Part B** applies the project visual system. Work through A before touching B.
 
 ## Scope
 
-Apply to all web UI work: landing pages, marketing sites, components, dashboards, prototypes, and design reviews. When a rule here conflicts with a framework default, this file wins. When the user's explicit prompt conflicts with a rule, the user wins.
+Apply to landing pages and marketing sites. The [Flow](../../docs/frontend-flow.md), project contract and user requirements govern scope and acceptance; this skill supplies methods rather than a universal style.
 
 **Companion skill.** For upgrading an *existing* site rather than building a new one, use `redesign-existing-projects` ([github.com/elayadesign/redesign-skill](https://github.com/elayadesign/redesign-skill)). It diagnoses generic patterns and defers to this file for every concrete value.
 
 ---
 
-# 本仓扩展（Webkubor 私有补充，2026-10-27 集成）
+# 按需参考
 
-> 上游 MIT 规则为主体（Part A/B 是**质量底线**：结构、转化、阶梯、间距、六态、内容真实性）。
-> 下面这些参考是本仓补充，**按需读取**：
->
-> | 文件 | 什么时候读 |
-> |---|---|
-> | `references/style-anchors.md` | 想要**不同于默认的视觉风格**时——八种可选风格（Swiss / Industrial / Brutalist / Aurora / Chaotic / Retro-Futuristic / Organic / Lo-Fi），按 brief 气质选一个。**风格是菜单不是枷锁；不指定就用 B1 的默认字体白名单。选定后覆盖 B1 字体，其余 Part B 规则照走** |
-> | `references/content-discipline.md` | 任何页面都适用：B8 之外的四条禁令（伪造数据冒充真实、filler 标签、主题化替换标准文案、Unicode 字形冒充图标）与 AI 味语域 |
-> | `references/single-ruler-principle.md` | 自建 token 系统时的 CSS 架构（框架内置尺度与自定义 token 打架 = 两把尺子）；用 Tailwind 时按 B1 阶梯即可 |
-> | `references/three-track-separation.md` | 项目文档要拆 PRODUCT / DESIGN / EXPERIENCE 三轨时 |
->
-> `templates/inject-bar.js` 用于作品集画廊页的元信息条注入（构建后注入，不改源文件）。
->
-> **底线与上限的关系**：Part A/B 定的是**下限**（不达标即不合格）；风格决定**上限**能到多高。
-> 底线不因选了任何风格而放宽。
-
----
+- [风格菜单](references/style-anchors.md)：新设计选择方向，无默认风格。
+- [内容纪律](references/content-discipline.md)：真实主张、可理解文案和演示标识。
+- [单尺原则](references/single-ruler-principle.md)：统一语义 token，避免框架与自定义尺度冲突。
+- [三轨分离](references/three-track-separation.md)：按变更职责组织产品、设计与交互文档。
+- [元信息条模板](templates/inject-bar.js)：仅适用于明确需要作品集元信息的演示页；使用前按项目配色、可访问性和路由改造，不自动注入产品。
 
 # PART A — Strategy and structure
 
@@ -93,7 +82,7 @@ If the user cannot answer, make a reasonable assumption, state it in one line, a
 11. Risk reversal, trial, cancel anytime, guarantee
 12. Final CTA, identical to the top
 
-Include the mandatory tagline reveal section from B11 somewhere in the mid page argument, typically right after the hero or after benefits.
+An optional tagline reveal can reinforce a narrative when the content and motion budget justify it; see the upstream visual recipe.
 
 ## A3. Layout selection
 
@@ -118,7 +107,7 @@ Pick one and say why.
 - ❌ "Save time and streamline"
 - ✅ "Cut your weekly reporting from 4 hours to 15 minutes"
 
-**Reduce risk.** Pick at least one: free trial, free plan, no credit card, cancel anytime, money back guarantee.
+**Reduce risk.** Explain actual trial, cancellation or guarantee terms where the product offers them; never invent commitments.
 
 **Treat objections as a section, not a footnote.** Move the FAQ earlier for high friction offers. Put proof directly beside the claim it supports.
 
@@ -135,7 +124,7 @@ Pick one and say why.
 
 **Benefit bullets.** Bold benefit, then the proof or detail. Example: **Faster iteration** — generate three layout variants in one click.
 
-Note: the copy rules in B1 still apply. No hyphens inside sentences, no orphaned words.
+Follow the project language and voice. Review wrapping with real content; preserve meaningful punctuation.
 
 ## A6. Build order
 
@@ -167,212 +156,19 @@ Never rebuild the whole page on each iteration. Section by section keeps control
 
 ---
 
-# PART B — Visual system
-
-Every visual value must resolve through these rules instead of being invented ad hoc.
-
-## B1. Typography
-
-### Fonts
-
-**Use:** Geist, Manrope, Geist Mono, Poppins.
-
-**Never use:** Inter, Roboto, Arial, Open Sans, Helvetica.
-
-**Never use italic fonts** anywhere in the interface.
-
-**One typeface per site.** Do not pair two fonts unless the prompt explicitly asks for it. Geist Mono is allowed alongside a primary font only for code, data, or numeric UI where a monospace is functionally required.
-
-**Never use ultra bold weights** (900 / black). Cap at semibold or bold.
-
-### Copy rules
-
-**No hyphens in text.** Do not use `-` inside body copy, headings, or labels. Rewrite the phrase instead.
-
-**No orphaned words.** A single word must never sit alone on the last line. Apply `text-wrap: balance` for headings and `text-wrap: pretty` for body copy.
-
-### Type scale
-
-Always resolve font sizes to Tailwind's default type scale. Never leave arbitrary values in place, including `text-[19px]`, `font-size: 22px`, or `1.4rem`.
-
-If an existing size does not land exactly on a step, snap it to the **closest step below**, taking both the size and its paired line height.
-
-| Class | Size | Line height |
-|---|---|---|
-| `text-xs` | 12px (0.75rem) | 16px |
-| `text-sm` | 14px (0.875rem) | 20px |
-| `text-base` | 16px (1rem) | 24px |
-| `text-lg` | 18px (1.125rem) | 28px |
-| `text-xl` | 20px (1.25rem) | 28px |
-| `text-2xl` | 24px (1.5rem) | 32px |
-| `text-3xl` | 30px (1.875rem) | 36px |
-| `text-4xl` | 36px (2.25rem) | 40px |
-| `text-5xl` | 48px (3rem) | 1 |
-| `text-6xl` | 60px (3.75rem) | 1 |
-| `text-7xl` | 72px (4.5rem) | 1 |
-| `text-8xl` | 96px (6rem) | 1 |
-| `text-9xl` | 128px (8rem) | 1 |
-
-Do not combine scale snapping with independently set custom line heights elsewhere in an audit. Tracking and line height may only be adjusted **within** the value the matched step already provides, so the two rules never fight each other.
-
-### Button type
-
-- Main buttons: `text-base` (16px), semibold.
-- Smaller header buttons: `text-sm` (14px), semibold.
-
-## B2. Spacing
-
-Only these values. Nothing between them, nothing outside them.
-
-| Token | Value |
-|---|---|
-| Spacing-0 | 0 |
-| Spacing-25 | 2px |
-| Spacing-50 | 4px |
-| Spacing-75 | 8px |
-| Spacing-100 | 12px |
-| Spacing-200 | 16px |
-| Spacing-300 | 24px |
-| Spacing-400 | 32px |
-| Spacing-500 | 40px |
-| Spacing-600 | 48px |
-| Spacing-700 | 64px |
-| Spacing-800 | 80px |
-| Spacing-900 | 96px |
-
-**Main buttons:** 8px vertical padding, 12px horizontal padding.
-
-## B3. Corner radius
-
-Only use Tailwind's radius values.
-
-**Nested radius formula.** When a shape sits inside another shape and the gap between them is **less than 32px**:
-
-```
-inner radius = outer radius − gap
-```
-
-Apply this only when the result is **greater than 2**. Below that, leave the inner shape square or unchanged.
-
-Example: an outer card at `rounded-2xl` (16px) with 8px of internal padding gives an inner element an 8px radius (`rounded-lg`).
-
-## B4. Borders and backgrounds
-
-- **Never apply a border to only one side of a card.** Borders go all the way around or not at all.
-- **Never use gradients in backgrounds.** Backgrounds are flat.
-
-### Dark mode background colors
-
-Use only these:
-
-`#000000` · `#181818` · `#1F1F1F` · `#272727` · `#313131` · `#131209`
-
-## B5. Hero section
-
-### Heading color
-
-- **Dark theme:** left to right gradient on the heading text, `#FFFFFF` → `#9B9B9B`.
-- **Light theme:** left to right gradient on the heading text, `#000000` → `#666666`.
-
-This is the one place gradients are used, and only on text, never on the background.
-
-### Layout
-
-- Heading and subheading both get a **max width of 680px**.
-- Read the heading copy and insert line breaks at **meaningful** points.
-- Never break a line in a way that cuts a phrase awkwardly or makes the sentence harder to read. Break where the thought breaks.
-
-## B6. Icons
-
-**Use:** Phosphor, Solar, or Iconamoon.
-
-**Never use:** Material Icons, Material Symbols.
-
-## B7. Motion
-
-Motion should feel weighted and decelerate into place. Never ship a browser default curve (`ease`, `linear`, `ease-in-out`).
-
-**Base curve:** `ease-[cubic-bezier(0.22,1,0.36,1)]` with `duration-500` for layout and position changes. Color and opacity shifts on hover may use `duration-300`, never shorter than 200ms.
-
-Animate only `transform` and `opacity`. Never animate `top`, `left`, `width`, or `height`.
-
-Respect `prefers-reduced-motion`: replace movement with a plain opacity change.
-
-### Navigation
-
-**Resting state.** A compact bar that floats off the top edge rather than sitting flush against it, centered and sized to its content. It uses a translucent surface over a background blur so page content stays faintly visible behind it. Spacing comes from B2, radius from B3.
-
-**Menu toggle.** The open and close icon transforms between its two states instead of swapping instantly. Use an icon from B6 or draw the lines yourself; either way the change is animated with the base curve.
-
-**Mobile menu.** Opens as a full height panel, not a small dropdown. The panel background uses the theme's base surface at high opacity with a strong blur.
-
-**Link entrance.** Links inside the open menu arrive one after another in reading order, each moving up a short distance (Spacing-300, 24px) while fading in. Step each item 60ms after the previous one and cap the total sequence at 400ms so long menus never feel slow.
-
-### Scroll reveals
-
-Sections entering the viewport rise a short distance (Spacing-400, 32px) and fade from 0 to full opacity over 600 to 800ms on the base curve. Reveal each section once; do not replay on scroll back up.
-
-Trigger reveals with `IntersectionObserver` or Framer Motion's `whileInView`. Never attach work to an unthrottled `window.addEventListener('scroll')`, since it runs on every frame and drags down mobile performance.
-
----
-
-## B8. Content realism
-
-Every piece of sample content should read like it came from a real product with real users.
-
-- **Write the copy.** No placeholder Latin, no "Your headline here". Draft real sentences in the product's voice.
-- **People.** Give testimonials and team members full, specific names that fit the product's audience and region. Never reuse one face for two people.
-- **Brands and logos.** Invent names that sound like they belong in the product's industry. A logistics tool's customers sound like logistics companies, not generic tech startups.
-- **Numbers.** Avoid suspiciously round figures. Pricing should look like real pricing, metrics should carry a decimal or an odd final digit, and dates across a list should vary.
-- **Banned filler words.** Do not write "revolutionize", "supercharge", "cutting edge", "effortless", "transform your workflow", "take it to the next level", "harness the power", or "world class". Say what the product does in plain terms instead.
-- **Sentence case** for headings and buttons.
-- **System messages.** Confirmations are calm and specific ("Invoice sent to Dana"). Errors say what failed and what to do next ("Upload failed. The file is over 20 MB."). No cute interjections, no exclamation marks.
-
-## B9. States
-
-Every interactive element ships with its full state set:
-
-- **Hover** — background shift, slight scale, or translate
-- **Active** — `scale(0.98)` or `translateY(1px)` for physical feedback
-- **Focus** — a visible focus ring. Accessibility requirement, not optional.
-- **Loading** — skeleton loaders shaped like the real layout, not circular spinners
-- **Empty** — a composed "getting started" view, never a blank panel
-- **Error** — inline and specific. Never `window.alert()`.
-
-No dead links. A button pointing at `#` is either linked or visually disabled. The current page must be indicated in the navigation.
-
-## B10. Ship requirements
-
-Things that get forgotten and make a page feel unfinished:
-
-- Privacy policy and terms links in the footer
-- A custom, branded 404
-- Client side form validation for email format and required fields
-- A skip to content link for keyboard users
-- Cookie consent where the jurisdiction requires it
-- A branded favicon
-- `<title>`, meta description, `og:image`, and social sharing tags
-- Alt text on every meaningful image
-- Semantic HTML: `<nav>`, `<main>`, `<article>`, `<aside>`, `<section>`
-- A way back from every page
-
-## B11. Tagline reveal section (mandatory)
-
-Every landing page includes one large type section stating the core benefit or tagline, separate from the hero. It sits further down the page as its own moment, not stacked directly under the hero.
-
-**Copy**
-- Minimum two lines of text.
-- A benefit statement or tagline, written in the voice of A5, not a generic section heading.
-
-**Typography**
-- Size `text-4xl` to `text-6xl` depending on line count, following the B1 type scale.
-- Max width capped like the hero, so lines break at meaningful points per B5.
-
-**Animation**
-- Text starts in a subtle, muted tone, roughly 25 to 35% opacity of the theme's base text color.
-- As the section scrolls into view, each word transitions individually from that muted tone to the full text color, in reading order.
-- Words activate one at a time as they cross a trigger line, not the entire block flipping at once. The transition uses the base curve from B7, never a linear fade.
-- Implement with `IntersectionObserver` per word, or a single scroll listener throttled through `requestAnimationFrame`. Never an unthrottled `window.addEventListener('scroll')`, per B7.
+# PART B — Project visual system
+
+Use the project's design contract, components and semantic tokens. For an existing design, preserve its typography, spacing, colors, radii and interaction intent; for a new design, explain choices in relation to the audience and primary task.
+
+- **Typography and spacing:** define semantic roles and a consistent scale suited to real content, language, zoom and supported viewports. No global font whitelist, font count or fixed size is required.
+- **Surfaces and layout:** choose borders, gradients, materials and nested radii intentionally. `inner radius = outer radius − gap` can help nested curves align; validate visually rather than apply it mechanically.
+- **Icons and components:** reuse the project's library or native semantic elements. Keep accessible labels, keyboard operation and visible focus.
+- **Motion:** add it where it explains feedback, state or narrative. Choose timing by travel distance and task, profile expensive effects, and provide a reduced-motion equivalent. Static pages are valid.
+- **Content:** use supplied proof and truthful claims. Mark mock data and fictional identities as demonstrations; do not fabricate customer endorsements, prices or metrics as facts.
+- **States:** cover the states applicable to each component, including focus, pending, empty and error where relevant. A spinner, skeleton, inline notice or native control may be appropriate for the task.
+- **Delivery:** validate navigation, forms, meaningful image alternatives, semantics, responsive behavior and project-specific legal/SEO requirements.
+
+For a deliberately selected visual direction, consult the [style menu](references/style-anchors.md). The [upstream visual recipe](references/upstream-visual-recipe.md) retains concrete navigation, nesting and tagline reveal techniques as optional examples, including historical values; it does not define project-independent gates.
 
 ---
 
@@ -397,28 +193,18 @@ Then build section by section per A6.
 **Strategy**
 - [ ] One offer, one audience, one primary action
 - [ ] No competing CTAs above the fold
-- [ ] Specific numbers instead of vague verbs
-- [ ] At least one risk reversal
+- [ ] Supported specifics instead of vague claims
+- [ ] Actual risk and commitment terms are clear
 - [ ] Proof sits next to the claim it supports
 - [ ] Layout type chosen deliberately
 
-**Visual**
-- [ ] Single approved typeface, no italics, no ultra bold
-- [ ] No hyphens in copy, no orphaned words
-- [ ] Every font size lands on a Tailwind scale step
-- [ ] Every spacing value comes from the spacing table
-- [ ] Nested radii follow the formula
-- [ ] No single sided card borders, no background gradients
-- [ ] Hero heading and subheading capped at 680px with meaningful line breaks
-- [ ] Icons from Phosphor, Solar, or Iconamoon
-- [ ] Every transition uses the B7 base curve, scroll reveals use IntersectionObserver
-- [ ] Tagline reveal section present, minimum two lines, words activate one at a time on scroll
-
-**Content and ship**
-- [ ] Real draft copy, believable names and numbers, no banned filler words
-- [ ] Hover, active, focus, loading, empty, and error states all present
-- [ ] No dead links, current nav item indicated
-- [ ] 404, legal links, form validation, favicon, meta tags, alt text
+**Visual and delivery**
+- [ ] Project typography, spacing, surfaces, icons and components are respected
+- [ ] Hierarchy and wrapping work with real content at supported viewports and zoom
+- [ ] Motion has a purpose and a reduced-motion equivalent where applicable
+- [ ] Claims, testimonials and metrics are supported; demo content is marked
+- [ ] Applicable interaction, loading, empty and error states are verified
+- [ ] Navigation, forms, semantics, alternatives and project shipping requirements are checked
 
 ---
 

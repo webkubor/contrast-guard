@@ -25,6 +25,12 @@
 
 ---
 
+## One frontend development Flow
+
+This repository owns the [frontend development Flow](docs/frontend-flow.md): scope → design/restore → implement → compare/fix → accept → deliver. Load [skills](skills/) as needed. `ui-restore` adds reference-led UI restoration, CSS source tracing, and regression-scope verification.
+
+Brand styles, assets, domains, accounts, and release policies stay in each project. CS only routes here. Skills are distributed from Git; the npm CLI continues to ship `src/docs`. Installed copies are not a second source of truth.
+
 ## 🏆 Why This
 
 | Task | Command / protocol | Result and boundary |

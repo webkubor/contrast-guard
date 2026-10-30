@@ -10,6 +10,8 @@ license: MIT (上游 https://github.com/elayadesign/ai-design-skills)
 
 # Design to Motion
 
+This is an optional showcase choreography method. The project brief decides which elements move and which exports are required. Timings, blur distances, PSNR targets and file sizes below are tuning examples, not general aesthetic gates. Document comparison conditions and inspect structural differences; calibrate thresholds to the reference. A website hero may remain static, and production content must remain available when animation or JavaScript is disabled.
+
 A showcase animation is not a redesign. The viewer must see **the exact design**, and must see that **it is alive**.
 
 **exact frame → empty state → smooth load → every visual acts out its story → seamless repeat.**
@@ -18,7 +20,7 @@ This skill has three parts. **Part A** rebuilds the design so the finished frame
 
 ## Scope
 
-Apply to any request to animate a static design: Figma frames, UI cards, dashboards, app screens, marketing heroes, product mockups, and designs placed on a photo background. When a rule here conflicts with a framework default, this file wins. When the user's explicit prompt conflicts with a rule, the user wins.
+Apply to any request to animate a static design: Figma frames, UI cards, dashboards, app screens, marketing heroes, product mockups, and designs placed on a photo background. Project requirements and the Frontend Flow take precedence over this recipe. When the user's explicit prompt conflicts with a rule, the user wins.
 
 **Not for** interaction motion inside a shipping product (hovers, menus, toasts). For that, use a product motion skill such as [emilkowalski/skills](https://github.com/emilkowalski/skills). **Companion skill:** `landing-page-design` in this repo, when the animation will live on a landing page.
 
@@ -43,13 +45,13 @@ Scan the page section by section. Apply this skill only where a section has a vi
 
 | Section | Apply |
 |---|---|
-| **Hero (always)**, with or without a visual: the header, headline, subtext, buttons, and proof line | The hero appear (below) on page load. Any visual inside the hero then follows its own row in this table |
+| **Hero (when motion is selected)**, with or without a visual: the header, headline, subtext, buttons, and proof line | The hero appear (below) on page load. Any visual inside the hero then follows its own row in this table |
 | Bento and feature sections: cards with text plus a visual (a chart, list, flow, calendar, prompt, player) | Card intro on scroll (B2, `card` kind, text included), then a story loop on each card's visual (B4). This is the main use on a landing page |
 | Product or dashboard mockup (a hero shot of the app, a product screenshot) | The loading intro on scroll: surfaces stay, contents load (A5). Then **ask the user** whether they also want stories after loading. Do not add them unasked |
 | Logo rows, integrations | A marquee or a gentle light up story |
 | Text only sections: headline blocks, testimonials, FAQ, pricing, CTA, footer | Not this skill. Use the page's normal scroll reveal (for example `landing-page-design` B7) |
 
-**The hero appear.** Every website gets it, every time, even when the hero is only text.
+**The optional hero appear.** Use this recipe only when the project calls for an entrance; keep content immediately available in reduced-motion or failed-script states.
 
 - **The page opens plain.** The first frame is the page background alone (and the static joined surfaces of an app frame mockup, if the hero has one). No text, no header, no buttons yet.
 - **A really small animation.** Each element rises just 6px and resolves from a 2px blur to sharp, with an opacity fade. Nothing slides far, nothing scales, nothing bounces. It should feel like the page settling into place, not like a show.
@@ -238,7 +240,7 @@ Render `?still` at 2x and compare it with the reference before any motion work.
 
 - PSNR for the whole frame and for each container, after a light blur (`gblur sigma≈1.2`) so sub pixel antialiasing does not dominate. Aim above 35 dB overall and above 30 dB per container. Text heavy containers sit near 30 dB because 3x layers are resampled to 2x; if one is lower, retest it at `sigma≈2.5`, where text edges stop counting and only structure remains.
 - Look at a blurred, amplified difference image. It reveals structural errors: a glow placed too high, wrong stacking, a missing stroke, a shifted shadow.
-- **Screenshot sources: also score the surfaces alone.** Lifted layers carry the surface colour inside their boxes, so they hide errors in the rebuilt surface beneath them and inflate the score. Mask out the lifted and cropped regions and score the rest; it must pass the same thresholds.
+- **Screenshot sources: also score the surfaces alone.** Lifted layers carry the surface colour inside their boxes, so they hide errors in the rebuilt surface beneath them and inflate the score. Mask out the lifted and cropped regions and score the rest; compare under the same documented conditions.
 - **Do not chase sub pixel offsets.** Measuring at 2x cannot resolve errors under half a pixel, and "corrections" overshoot. Fix structure, not antialiasing.
 
 ---
@@ -450,7 +452,7 @@ On the page side, in `?capture`:
 |---|---|
 | `<name>-x.mp4` | H.264, `yuv420p`, 60fps, CRF 14–15, preset slow, `+faststart`, max 1920×1200, even dimensions |
 | `<name>-loop.gif` | 960px wide, 15–20fps, about 2 to 3MB, for the website |
-| `<name>-800x500.gif` | Always delivered. When the frame has wide empty borders (most card and bento frames), crop to the content at exactly 1.6:1, with about 40 CSS px of margin on the tighter axis; the other axis grows to reach the ratio. When the content fills the frame, fit it and pad with the page background colour. On a photo background, always crop, so no flat band sits beside the photo. 20fps, 12fps if heavy |
+| `<name>-800x500.gif` | Deliver when requested or included in the agreed showcase package. When the frame has wide empty borders (most card and bento frames), crop to the content at exactly 1.6:1, with about 40 CSS px of margin on the tighter axis; the other axis grows to reach the ratio. When the content fills the frame, fit it and pad with the page background colour. On a photo background, always crop, so no flat band sits beside the photo. 20fps, 12fps if heavy |
 
 ```bash
 ffmpeg -start_number $A -framerate 60 -i frames/%05d.png -frames:v $N \
@@ -530,7 +532,7 @@ Every motion and export value lives here. Edit this section and the rest of the 
 
 **Context and layout**
 - [ ] Context decided: showcase, or website with each section mapped (text only sections untouched)
-- [ ] Website hero: page opens plain, then the small hero appear plays once on load
+- [ ] Website hero: selected entrance follows the project contract; static and reduced-motion states remain readable
 - [ ] Website mockups: asked the user before adding stories after the loading intro
 - [ ] Layout identified: app frame with joined surfaces, or separate cards
 - [ ] App frame: joined surfaces present, opaque, and still in the empty state, Figma stacking kept where they meet
@@ -552,7 +554,7 @@ Every motion and export value lives here. Edit this section and the rest of the 
 
 **Export**
 - [ ] Deterministic frame capture: whole millisecond steps averaging 1000/60, start and tick inside the seek, no real time recording
-- [ ] `<name>-x.mp4`, `<name>-loop.gif`, `<name>-800x500.gif` delivered
+- [ ] Agreed MP4 / GIF deliverables exported and verified
 - [ ] Token never printed or committed
 
 ---

@@ -1,126 +1,27 @@
-# CF Pages + Vite 环境变量调试完全手册
+# Cloudflare Pages + Vite 配置排障参考
 
-> 来源：2026-07-22 hym-admin 全线白屏事故。从发现到修复耗时 2 小时，踩遍所有坑。
+由一次项目白屏事故抽象。适用于该供应商与构建工具组合，不是默认托管方案；项目域名、账号、项目标识与历史事故资产留在项目，不进入全局方法。
 
-## 症状
+## 先区分配置在哪个阶段被消费
 
-- 页面 curl 返回 HTTP 200，HTML 正常，JS 资源 200
-- 浏览器打开页面，console 抛出 `supabaseUrl is required`
-- 登录表单不渲染，页面白屏
-- 根本原因：`import.meta.env.VITE_SUPABASE_URL` === `undefined`
+| 阶段 | 检查什么 | 常见误判 |
+|---|---|---|
+| 本地构建后上传静态产物 | 构建进程环境、所选 mode、对应 env 文件、产物版本 | 上传平台已有变量就会补进已构建的 JS |
+| 平台 Git 构建 | 所选生产/预览环境、分支、构建设置和日志 | 本地 env 文件会自动存在于远端构建 |
+| Functions 等服务运行时 | 运行时 binding/secret 与代码读取方式 | 运行时 secret 能自动改变静态前端产物 |
 
-## 根因链路
+Vite 暴露给客户端的配置会进入可下载产物；只放公开配置，例如 API 基地址或供应商允许公开的客户端标识。服务端密钥、管理 token、service-role 凭据不得使用客户端前缀或打入前端。
 
-```
-本地 .env 有 VITE_SUPABASE_URL ✅
-    ↓ npm run build（本地构建，读 .env）
-dist/ 产物嵌入 VITE_SUPABASE_URL ✅
-    ↓ wrangler pages deploy dist
-CF Pages 部署成功 ✅
-    ↓ 打开页面
-白屏 ❌ ← import.meta.env.VITE_SUPABASE_URL === undefined
-```
+## 诊断顺序
 
-**为什么？** 本地 `.env` 里的 `VITE_SUPABASE_ANON_KEY` 是截断的旧值（220 字节→仅 JWT header），Vite 构建时读了截断值，导致 Supabase 客户端初始化失败。
+1. 复现实际路由，记录部署版本、环境、分支和浏览器异常。HTTP 200 与资源 200 仅证明传输，不能证明初始化成功。
+2. 追踪报错配置项在代码中如何读取、在哪一步消费。未配置、mode 不符、命名错误、初始化顺序和 URL 格式分别验证，不凭密钥字符数猜原因。
+3. 确认真实构建发生位置。对本地构建，检查本地构建进程；对平台构建，检查相应环境的构建配置。仅记录变量是否存在及校验结果，不打印值。
+4. 检查产物是否引用预期的公开 API 基地址，以及 HTML、JS hash、缓存和部署版本是否匹配。不要搜索或输出完整密钥。
+5. 按项目发布流程修正后重新构建、部署，再在目标环境打开页面，验证关键路径、console 与请求。记录任何仍未解释的异常。
 
-## 环境变量三层结构（关键区分）
+## 凭据与工具输出
 
-Cloudflare Pages 有三层环境变量，使用者角色不同：
+凭据通过项目批准的密钥存储或平台 UI/自动化注入；不放进聊天、截图、临时明文文件或终端输出。若工具脱敏或截断，使用安全注入通道及布尔校验结果，不能编码绕过脱敏。供应商 CLI、绑定模型与部署设置可能变化，操作前查其当前文档和帮助。
 
-| 层 | 设置方式 | 谁用 | 典型变量 |
-|---|---------|------|---------|
-| **Secrets** | `wrangler pages secret put` | Functions 运行时 | SUPABASE_SERVICE_KEY, JWT_SECRET |
-| **部署 env_vars** | CF API `deployment_configs.production.env_vars` | **CF 侧构建**（Git 集成自动部署） | VITE_SUPABASE_URL |
-| **本地 .env** | 项目目录 `.env` 文件 | **本地构建**（`npm run build`） | VITE_SUPABASE_URL |
-
-**关键区别**：`npm run build` + `wrangler pages deploy dist` 是**本地构建**，读的是 `.env`。CF 侧的 `deployment_configs.production.env_vars` 只在 **Git 集成自动部署**（CF 侧构建）时生效。
-
-## 修复步骤
-
-### 1. 确认本地 .env 完整
-
-```bash
-# 从 Supabase Management API 获取真实完整 key
-curl -s "https://api.supabase.com/v1/projects/<ref>/api-keys" \
-  -H "Authorization: Bearer <sbp_token>" | \
-  python3 -c "import json,sys; d=json.load(sys.stdin); \
-    [print(f\"{k['name']}={k['api_key']}\") for k in d if k['name'] in ('anon','service_role')]"
-```
-
-### 2. 更新本地 .env
-
-```bash
-# VITE_SUPABASE_URL=https://<ref>.supabase.co
-# VITE_SUPABASE_ANON_KEY=<完整 anon key，208+ 字符>
-```
-
-### 3. 本地构建 + 部署
-
-```bash
-npm run build
-CLOUDFLARE_ACCOUNT_ID=xxx npx wrangler pages deploy dist --project-name=<name> --branch=main
-```
-
-### 4. 同时设置 CF 侧 env_vars（可选，为 Git 集成自动部署做准备）
-
-```python
-# 通过 CF API 设置 deployment_configs
-import json, urllib.request
-url = "https://api.cloudflare.com/client/v4/accounts/<account>/pages/projects/<project>"
-data = json.dumps({
-    "deployment_configs": {
-        "production": {
-            "env_vars": {
-                "VITE_SUPABASE_URL": {"value": "https://xxx.supabase.co"},
-                "VITE_SUPABASE_ANON_KEY": {"value": "<real anon key>"}
-            }
-        }
-    }
-}).encode()
-req = urllib.request.Request(url, data=data, headers={
-    "Authorization": f"Bearer {cf_token}",
-    "Content-Type": "application/json"
-}, method="PATCH")
-```
-
-## 验证方法
-
-```bash
-# 1. 检查线上 JS bundle 是否包含 Supabase URL
-curl -s "$URL" | grep -o 'assets/[^"]*\.js' | head -1 | \
-  xargs -I{} curl -s "$URL/{}" | grep -o 'tcxknssrqyfqwtnhoplx'
-
-# 2. egolite 真实浏览器验证
-ego-browser nodejs <<'EOF'
-const task = await useOrCreateTaskSpace('cf pages vite env check')
-await openOrReuseTab(process.env.URL, { wait: true, timeout: 30 })
-cliLog(await snapshotText())
-cliLog(JSON.stringify(await drainEvents(), null, 2))
-EOF
-```
-
-## Hermes 脱敏绕过
-
-当 API key / token 被 Hermes 在 terminal/execute_code/write_file 中截断时，用 **base64 编码绕过**：
-
-```bash
-# 1. 把 key 写入文件（curl 输出直接 base64）
-curl ... | base64 > /tmp/keys.b64
-
-# 2. Python 读取并解码
-python3 -c "
-import json,base64
-raw = json.loads(base64.b64decode(open('/tmp/keys.b64').read()))
-open('/tmp/real-key.txt','w').write(raw['api_key'])
-"
-
-# 3. 用 decoded key
-SVC_KEY=$(cat /tmp/real-key.txt)
-```
-
-## 关键教训
-
-1. **CF Pages `wrangler pages secret put` 设置的不是构建时变量** — Vite 构建时需要 `VITE_` 变量，它们必须在本地 `.env` 或 CF `deployment_configs.production.env_vars` 中
-2. **本地构建时检查 .env 完整性** — 被截断的 key（如 JWT header 只有 220 字节）会导致 `supabaseUrl is required`
-3. **只用 curl HTTP 200 验证不够** — 必须 egolite 真实浏览器 + console 零异常
-4. **Hermes 会截断所有 key 输出** — 用 base64 文件中转绕过
+参考：[Vite 环境变量](https://vite.dev/guide/env-and-mode)、[Pages 构建配置](https://developers.cloudflare.com/pages/configuration/build-configuration/)、[Pages Functions bindings](https://developers.cloudflare.com/pages/functions/bindings/)。
