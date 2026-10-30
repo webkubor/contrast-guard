@@ -106,10 +106,10 @@
 ## 安装
 
 ```bash
-npm i -D frontend-contrast-guard
+npm i -D github:webkubor/frontend-contrast-guard
 ```
 
-> 包尚未发布 npm，发布前以 GitHub 源安装：`npm i -D github:webkubor/frontend-contrast-guard`。
+> 本 CLI 按体系惯例经 git 分发，不发布 npm；`setup` 会自动以此方式自我安装。配套的两个 vite 插件在 npm 上。
 
 包名为 `frontend-contrast-guard`；`frontend-contrast-guard` 与 `contrast-guard` 两个命令指向同一 CLI，以下使用短别名。
 
@@ -260,6 +260,24 @@ contrast-guard measure --baselines                        # 列出基线
 
 之所以以 Node 为目标而不是 Bun：这个包是被别的项目依赖的 CI 护栏，
 不该要求使用方切换运行时；GitHub Actions 默认带 Node，用 Bun 得多一步 `setup-bun`。
+
+## skills/：前端工程技能库
+
+仓库自带一套前端工程 skill（`skills/<name>/SKILL.md`），与本 CLI 的检查、计量、评审构成同一体系——工具管「机器能判的」，skill 沉淀「人怎么做」：
+
+| skill | 干什么 |
+|---|---|
+| `apple-design` | Apple 交互质感与流体动效的 Web 转译（手势、弹簧、可中断过渡） |
+| `award-creative-ui` | Awwwards/FWA 获奖级创意 UI 手艺与门禁，可用性短板一票否决 |
+| `browser-verify` | UI 视觉验证方法论：截图取证、双主题、移动端、白屏诊断的 DoD |
+| `clone-website` | 一次性逆向复刻网站：资产、CSS、内容分区提取 |
+| `design-to-motion` | 静态设计稿（Figma/截图）转像素级动效 HTML 复刻 |
+| `frontend-e2e` | 页面完成度与对齐 PRD 的结构化浏览器验收，ego-browser + agent-eyes 取证 |
+| `landing-page-design` | 高转化落地页完整体系：结构、文案、转化链路 |
+| `ui-review` | 把「丑」翻译成可执行整改条目：计量 + 截图对照成因清单 |
+| `ui-restore` | 从 Figma/PRD/截图还原 UI，双证据定位视觉缺陷根因 |
+
+使用：把 `skills/<name>` 复制（或软链）到 `~/.zcode/skills/` 全局可用，或项目 `.zcode/skills/` 随 git 共享给团队。`.use_count` / `.last_used` 是本地使用统计，不进版本库。
 
 ## 配套：同一条前端质量链路
 

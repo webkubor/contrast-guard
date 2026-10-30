@@ -14,7 +14,7 @@ export const SETUP_PLUGINS = [
   },
 ]
 
-/** 本包尚未发布 npm，自我安装走 GitHub git 源；发布后可切回 registry 版本。 */
+/** 自我安装走 GitHub git 源：本 CLI 按体系惯例经 git 分发，不依赖 npm registry。 */
 export const SELF_DEP = 'github:webkubor/frontend-contrast-guard'
 
 export const SETUP_SCRIPTS = { 'contrast:check': 'contrast-guard check' }

@@ -126,7 +126,7 @@ cs 工具链（可选，setup 不自动安装）：
   cs-mcp     curl -fsSL https://raw.githubusercontent.com/webkubor/cs-mcp/main/install.sh | bash
   ego-browser  参考 https://lite.ego.app
 
-说明：frontend-contrast-guard 尚未发布 npm，自我安装走 GitHub git 源（${SELF_DEP}），发布后可切回 registry 版本。`)
+说明：本 CLI 经 GitHub git 源分发（${SELF_DEP}），不依赖 npm registry；两个 vite 插件来自 npm。`)
     return 0
   } catch (error) {
     console.error(`Setup error: ${error.message}`)
