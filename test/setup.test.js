@@ -1,9 +1,16 @@
-/** setup 纯逻辑：包管理器探测、安装命令、scripts 注入与 vite.config 幂等改写。 */
+/** setup 纯逻辑：包管理器探测、安装命令、scripts 注入、技能挑选与 vite.config 幂等改写。 */
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  detectPackageManager, installArgs, injectScripts, rewriteViteConfig, SETUP_PLUGINS, SELF_DEP,
+  detectPackageManager, installArgs, injectScripts, selectSkills, rewriteViteConfig, SETUP_PLUGINS, SELF_DEP,
 } from '../src/setup.js'
+
+test('selectSkills 只装缺失的 skill，已存在的跳过不覆盖', () => {
+  const r = selectSkills(['apple-design', 'ui-review', 'ui-restore'], ['ui-review'])
+  assert.deepEqual(r.toInstall, ['apple-design', 'ui-restore'])
+  assert.deepEqual(r.skipped, ['ui-review'])
+  assert.deepEqual(selectSkills([], ['x']).toInstall, [])
+})
 
 test('detectPackageManager 按锁文件优先级判定，无锁文件回落 npm', () => {
   assert.equal(detectPackageManager(['pnpm-lock.yaml', 'package-lock.json']), 'pnpm')

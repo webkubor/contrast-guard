@@ -1,9 +1,10 @@
-/** setup CLI：把 contrast-guard 本体、配套 vite 插件与 logo skill 引导装进当前 Vite 项目。 */
-import { readFileSync, writeFileSync, copyFileSync, existsSync, readdirSync, mkdirSync } from 'node:fs'
-import { resolve, basename } from 'node:path'
+/** setup CLI：把 contrast-guard 本体、体系技能库、配套 vite 插件与 logo skill 引导装进当前 Vite 项目。 */
+import { readFileSync, writeFileSync, copyFileSync, existsSync, readdirSync, mkdirSync, cpSync } from 'node:fs'
+import { resolve, basename, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 import {
-  rewriteViteConfig, injectScripts, detectPackageManager, installArgs,
+  rewriteViteConfig, injectScripts, detectPackageManager, installArgs, selectSkills,
   SETUP_PLUGINS, SELF_DEP, CONFIG_TEMPLATE,
 } from './setup.js'
 
@@ -91,24 +92,43 @@ export function runSetup(args, cwd = process.cwd()) {
         : '已生成模板（files/pairs 改成你的变量名后运行 contrast:check）'
     }
 
-    // 6. logo skill：克隆进项目 .zcode/skills，随 git 共享给团队
-    let skillNote = '跳过（--skip-skill）'
+    // 6. 技能库落进项目 .zcode/skills：
+    //    6a 随包分发的体系 skills/ 直接复制（无需网络，已存在跳过不覆盖）
+    //    6b logo-brand-designer 独立仓库，git 克隆
+    const skillNotes = []
     if (flags.skill) {
-      const dest = resolve(cwd, '.zcode/skills/logo-brand-designer')
-      if (existsSync(dest)) {
-        skillNote = '.zcode/skills/logo-brand-designer 已存在'
-      } else if (spawnSync('git', ['--version']).status !== 0) {
-        skillNote = `未找到 git，手动执行：git clone --depth 1 ${SKILL_REPO} .zcode/skills/logo-brand-designer`
-      } else if (dry) {
-        skillNote = '[dry-run] 将克隆 logo-brand-designer 到 .zcode/skills/'
-      } else {
-        mkdirSync(resolve(cwd, '.zcode/skills'), { recursive: true })
-        const r = spawnSync('git', ['clone', '--depth', '1', SKILL_REPO, dest], { cwd, stdio: 'inherit' })
-        skillNote = r.status === 0
-          ? 'logo-brand-designer 已装入 .zcode/skills/（随 git 共享给团队）'
-          : `克隆失败，手动执行：git clone --depth 1 ${SKILL_REPO} .zcode/skills/logo-brand-designer`
+      const skillsRoot = resolve(cwd, '.zcode/skills')
+      const bundledRoot = fileURLToPath(new URL('../skills/', import.meta.url))
+      if (existsSync(bundledRoot)) {
+        const bundled = readdirSync(bundledRoot, { withFileTypes: true })
+          .filter((d) => d.isDirectory()).map((d) => d.name).sort()
+        const existing = existsSync(skillsRoot) ? readdirSync(skillsRoot) : []
+        const { toInstall, skipped } = selectSkills(bundled, existing)
+        if (!dry) {
+          for (const name of toInstall) {
+            mkdirSync(skillsRoot, { recursive: true })
+            cpSync(join(bundledRoot, name), join(skillsRoot, name), { recursive: true })
+          }
+        }
+        skillNotes.push(dry
+          ? `[dry-run] 将复制 ${toInstall.length} 个体系 skill${toInstall.length ? '：' + toInstall.join('、') : ''}${skipped.length ? `；已存在跳过 ${skipped.length} 个` : ''}`
+          : `体系 skill 复制 ${toInstall.length} 个${skipped.length ? `、跳过已存在 ${skipped.length} 个` : ''} → .zcode/skills/（随 git 共享给团队）`)
       }
-    }
+      const logoDest = join(skillsRoot, 'logo-brand-designer')
+      if (existsSync(logoDest)) {
+        skillNotes.push('logo-brand-designer 已存在')
+      } else if (spawnSync('git', ['--version']).status !== 0) {
+        skillNotes.push(`未找到 git，手动执行：git clone --depth 1 ${SKILL_REPO} .zcode/skills/logo-brand-designer`)
+      } else if (dry) {
+        skillNotes.push('[dry-run] 将克隆 logo-brand-designer 到 .zcode/skills/')
+      } else {
+        mkdirSync(skillsRoot, { recursive: true })
+        const r = spawnSync('git', ['clone', '--depth', '1', SKILL_REPO, logoDest], { cwd, stdio: 'inherit' })
+        skillNotes.push(r.status === 0
+          ? 'logo-brand-designer 已克隆到 .zcode/skills/'
+          : `克隆失败，手动执行：git clone --depth 1 ${SKILL_REPO} .zcode/skills/logo-brand-designer`)
+      }
+    } else skillNotes.push('跳过（--skip-skill）')
 
     // 7. 摘要与后续指引
     console.log('\n前端工程体系 setup 结果：')
@@ -116,7 +136,7 @@ export function runSetup(args, cwd = process.cwd()) {
     for (const n of configNotes) console.log(`  vite 配置    ${n}`)
     console.log(`  scripts      ${scriptsNote}`)
     console.log(`  配色配置     ${cfgNote}`)
-    console.log(`  logo skill   ${skillNote}`)
+    for (const n of skillNotes) console.log(`  skill        ${n}`)
     console.log(`
 CI 接入（GitHub Actions step 示例）：
   - run: ${pm} install

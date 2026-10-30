@@ -12,7 +12,7 @@
 
 - 安装：`npm i -D github:webkubor/frontend-contrast-guard`（体系惯例经 git 分发，不发布 npm）。`frontend-contrast-guard` 与 `contrast-guard` 为同一 CLI 的双别名。
 - 静态检查：`contrast-guard --init`；`contrast-guard check --json`。配置文件声明色板文件与配色对；检查路径零依赖。
-- 体系引导：`contrast-guard setup [--dry-run]`。在 Vite 项目根目录安装本体（GitHub git 源）+ vite-plugin-agent-eyes + vite-plugin-refresh-guard，备份后幂等改写 vite.config 注册插件，注入 `contrast:check` script，生成配置模板，克隆 logo-brand-designer skill 到 `.zcode/skills/`。`--skip-install/config/scripts/skill/self` 分步；安装失败即中止不动 vite 配置。
+- 体系引导：`contrast-guard setup [--dry-run]`。在 Vite 项目根目录安装本体（GitHub git 源）+ vite-plugin-agent-eyes + vite-plugin-refresh-guard，备份后幂等改写 vite.config 注册插件，注入 `contrast:check` script，生成配置模板，并把技能库落入项目 `.zcode/skills/`：随包 `skills/` 复制（已存在跳过）+ logo-brand-designer 克隆。`--skip-install/config/scripts/skill/self` 分步；安装失败即中止不动 vite 配置。阶段路由总纲见 docs/frontend-flow.md。
 - CSS 采样：`contrast-guard measure <url> --save <name>`；`contrast-guard measure <url> --vs <name>`。需要运行时探测的浏览器驱动。
 - 创建评审记录：`contrast-guard review --init ui-review.json`。成功退出 0，不覆盖已有文件；空模板评估为 HOLD。
 - 核验评审：`contrast-guard review ui-review.json --json`。评估退出 0 = PASS（记录满足门禁），1 = HOLD，2 = 输入错误。

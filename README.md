@@ -155,7 +155,7 @@ contrast-guard setup          # 把体系装进当前 Vite 项目（见下）
 
 ### setup：把前端工程体系装进你的 Vite 项目
 
-在 Vite 项目根目录跑一次，装齐同一条质量链路：本体 + [agent-eyes](https://github.com/webkubor/vite-plugin-agent-eyes)（提交治理与运行时遥测）+ [refresh-guard](https://github.com/webkubor/vite-plugin-refresh-guard)（版本检测刷新），并落一份 [logo-brand-designer](https://github.com/webkubor/logo-brand-designer) skill 到项目 `.zcode/skills/`（随 git 共享给团队）。
+在 Vite 项目根目录跑一次，装齐同一条质量链路：本体 + [agent-eyes](https://github.com/webkubor/vite-plugin-agent-eyes)（提交治理与运行时遥测）+ [refresh-guard](https://github.com/webkubor/vite-plugin-refresh-guard)（版本检测刷新），并把技能库落进项目 `.zcode/skills/`——随包分发的体系 skill 直接复制，[logo-brand-designer](https://github.com/webkubor/logo-brand-designer) 从其仓库克隆（随 git 共享给团队）。
 
 ```bash
 contrast-guard setup              # 全量安装并接线
@@ -168,7 +168,7 @@ setup 依次做五件事，每步幂等、可重复跑：
 2. 备份后改写 `vite.config.{js,ts,mjs,mts}` 注册插件，原文件存为 `*.cg-backup-<时间戳>`；已接线的插件自动跳过
 3. 注入 `contrast:check` script（不覆盖已有键）
 4. 生成 `contrast.config.json` 模板（已存在则跳过）
-5. 克隆 logo skill；机器上没有 git 时给出手动命令
+5. 安装技能库到 `.zcode/skills/`：随包 `skills/` 直接复制（已存在的跳过、不覆盖），logo-brand-designer 克隆自 GitHub；机器上没有 git 时给出手动命令
 
 `--skip-install` / `--skip-config` / `--skip-scripts` / `--skip-skill` / `--skip-self` 可分步执行（`--skip-self` 不把本体装进 devDependencies，适合只想接插件的项目）。cs 工具链（cs-mcp、ego-browser）不在自动安装范围，setup 结束会打印指引。
 
@@ -269,7 +269,7 @@ contrast-guard measure --baselines                        # 列出基线
 
 ## skills/：前端工程技能库
 
-仓库自带一套前端工程 skill（`skills/<name>/SKILL.md`），与本 CLI 的检查、计量、评审构成同一体系——工具管「机器能判的」，skill 沉淀「人怎么做」：
+仓库自带一套前端工程 skill（`skills/<name>/SKILL.md`），与本 CLI 的检查、计量、评审构成同一体系——工具管「机器能判的」，skill 沉淀「人怎么做」。阶段路由与项目资产归属的总纲见 [前端研发 Flow](docs/frontend-flow.md)：本仓是通用前端方法的唯一真源，Flow 组织阶段、skills 提供按需方法、CLI 提供测量与证据检查：
 
 | skill | 干什么 |
 |---|---|
@@ -283,7 +283,7 @@ contrast-guard measure --baselines                        # 列出基线
 | `ui-review` | 把「丑」翻译成可执行整改条目：计量 + 截图对照成因清单 |
 | `ui-restore` | 从 Figma/PRD/截图还原 UI，双证据定位视觉缺陷根因 |
 
-使用：把 `skills/<name>` 复制（或软链）到 `~/.zcode/skills/` 全局可用，或项目 `.zcode/skills/` 随 git 共享给团队。`.use_count` / `.last_used` 是本地使用统计，不进版本库。
+使用：`contrast-guard setup` 自动把技能库落入项目 `.zcode/skills/`（已存在的跳过、不覆盖）；也可手动复制（或软链）`skills/<name>` 到 `~/.zcode/skills/` 全局可用。`.use_count` / `.last_used` 是本地使用统计，不进版本库。
 
 ## 配套：同一条前端质量链路
 

@@ -51,6 +51,14 @@ export function injectScripts(scripts = {}) {
   return { scripts: next, added }
 }
 
+/** 从随包分发的技能库挑出目标项目还没有的：已存在的不覆盖（项目侧可能改过）。 */
+export function selectSkills(bundled, existing) {
+  return {
+    toInstall: bundled.filter((name) => !existing.includes(name)),
+    skipped: bundled.filter((name) => existing.includes(name)),
+  }
+}
+
 /**
  * 幂等改写 vite.config 内容：为未接线的插件补 import 与 plugins 注册。
  * 已含某插件（以包名出现为准）则跳过该插件；找不到可用的 plugins 锚点时
