@@ -2,7 +2,7 @@
 
 来源：Elaya 的 [ai-design-skills](https://github.com/elayadesign/ai-design-skills)，MIT；署名与许可见[主技能](../SKILL.md#credits)。以下保留上游独有的具体布局、嵌套圆角、导航与逐词揭示实现思路。
 
-这是一套特定审美的配方，不是全局标准。文中 only/never/mandatory/always 等措辞仅描述采用该配方时的原始选择，不能覆盖项目契约、既定设计、用户要求或[评审标准](../../../docs/frontend-review-standard.md)。字体白名单、固定尺寸、色板、必加动效及虚构内容不作为验收门槛；生产内容必须真实，演示数据须明确标识。可单独借鉴方法，不必整套采用。
+这是一套特定审美的配方，不是全局标准。文中 only/never/mandatory/always 等措辞仅描述采用该配方时的原始选择，不能覆盖项目契约、既定设计、用户要求或[评审标准](https://github.com/webkubor/frontend-contrast-guard/blob/main/../)。字体白名单、固定尺寸、色板、必加动效及虚构内容不作为验收门槛；生产内容必须真实，演示数据须明确标识。可单独借鉴方法，不必整套采用。
 
 # PART B — Visual system
 

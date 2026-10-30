@@ -10,7 +10,7 @@ platform: shared
 origin: Migrated from CortexOS clone-website; maintained here under the Frontend Flow
 ---
 
-通用前端研发唯一入口：[Frontend Flow](../../docs/frontend-flow.md)。项目品牌、组件库、域名和发布规则从项目读取。
+通用前端研发唯一入口：[Frontend Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/../)。项目品牌、组件库、域名和发布规则从项目读取。
 
 # ── 质量追踪 ──
 {

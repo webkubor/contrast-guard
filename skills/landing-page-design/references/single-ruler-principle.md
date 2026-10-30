@@ -15,4 +15,4 @@
 
 选用 Material、Tailwind 或其他组件系统都可以；问题在于语义重叠却不受控。不同框架版本的配置语法不同，实施前读项目配置及当前文档。
 
-完整评审遵循[评审标准](../../../docs/frontend-review-standard.md)。
+完整评审遵循[评审标准](https://github.com/webkubor/frontend-contrast-guard/blob/main/../)。
