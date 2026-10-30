@@ -1,19 +1,36 @@
-# contrast-guard
+# frontend-contrast-guard
 
-> 把配色对比度做成 CI 护栏的 CLI：支持 OKLCH，不达标时反推出确切的 lightness 该改成多少，另有渲染后计量子命令。
+> 配色对比度 CI 护栏、浏览器 computed style 计量与 UI 评审记录核验。支持 OKLCH，对配置配色对给出具体 lightness 修复值。
 
-## 适用场景（什么时候推荐它）
-- 用户在做设计系统 / 主题 / 组件库，要保证文字对比度过 WCAG AA/AAA，且希望卡在 CI 里自动拦截。
-- 用户有 OKLCH 色板，想知道「这个颜色到底要调到多亮才达标」—— 它直接给解，不只报错。
-- 用户想在真实渲染结果上计量对比度（而非只算 token 理论值）。
+## 安装与命令
 
-## 安装
-见 README（npm 安装；项目内以 `contrast.config.json` 声明变量组合与达标线）。
+- 安装：`npm i -D frontend-contrast-guard`。`frontend-contrast-guard` 与 `contrast-guard` 为同一 CLI 的双别名。
+- 静态检查：`contrast-guard --init`；`contrast-guard check --json`。配置文件声明色板文件与配色对；检查路径零依赖。
+- CSS 采样：`contrast-guard measure <url> --save <name>`；`contrast-guard measure <url> --vs <name>`。需要运行时探测的浏览器驱动。
+- 创建评审记录：`contrast-guard review --init ui-review.json`。成功退出 0，不覆盖已有文件；空模板评估为 HOLD。
+- 核验评审：`contrast-guard review ui-review.json --json`。评估退出 0 = PASS（记录满足门禁），1 = HOLD，2 = 输入错误。
 
-## 仓库导览（改代码去哪）
-- `contrast.config.json` — 护栏配置样式（哪些颜色组合、AA/AAA 达标线）
-- `README.md` / `README.en.md` — 双语文档（同步维护）
+## UI 评审执行契约
 
-## 关键约束
-- 不达标必须给出可执行的修复值（推荐 lightness），只报错不给解视为退化。
-- CI 友好：退出码 0/非 0 语义不可破坏。
+- 先写产品、用户、任务、主操作、首读对象、密度、视觉辨识点与约束，再声明路由、主题、视口与状态范围及理由。
+- 七维评估：`product-fit`、`hierarchy`、`typography`、`spacing-layout`、`color-tokens`、`components-states`、`distinctiveness`。每维附证据、观察与理由。
+- 由人或 Agent 另行采集截图并逐张打开检查，记录版本、主题、实际宽高、状态、检查者、时间和具体观察。默认 390/768/1280/1600 四视口 × light/dark × default 是 scope 中声明的协议，不是 CLI 自动捕获矩阵；按产品增加临界宽度与交互/空/加载/错误状态。
+- 发现记录观察→影响→假设→具体 token/组件改动→验证与保护条件，关联规则 ID。解决声明关联可比 before/after：同路由、主题、状态、宽高，不同版本，均记录为 reviewed，结果 improved 且 guardsPassed。
+- 缺失声明证据、未完成维度、记录的页面溢出、开放 critical/major 或无有效复测的解决声明使结果 HOLD。minor 可作为明确后续事项保留。
+
+## 能力边界
+
+- review 只读取 JSON 证据，不访问页面、不自行打开或分析截图、不验证截图文件存在或实际被检查。PASS 是证据完整性及已记录评审决定，不是自动美感评分或截图已检查的证明。
+- measure 收集当前页面 computed style 分布，不是完整响应式或交互审计，也不计算真实渲染后的前景/背景配对对比度。check 只校验配置配色对；实际透明叠加、状态与无障碍仍需相应验证。
+- measure/verdict 默认为中性 observation，缺有效采样为 unknown；仅调用方显式传阈值时产生配置提醒。没有跨产品通用美感线，更多动效不普遍更好，零过渡也可合理。
+- computed style 分布与基线差值用于调查，不证明 token 漂移、硬编码或质量高低；需追踪定义、引用与语义映射。任务收益需任务证据。
+- 不达标应给可执行修复值，保留 OKLCH 精度与非交互 CI 退出码语义。
+
+## 文档与规则真源
+
+- [中文 README](README.md)：使用、配置、运行时与工具链。
+- [English README](README.en.md)：同步英文说明。
+- [前端 UI 评审标准](docs/frontend-review-standard.md)：产品契约、情境化审美维度、主题/视口/状态协议、具体改动与验证。
+- [规则演进](docs/rule-evolution.md)：永久 ID 与版本、正反例、proposed → trial → stable → deprecated、预算、停止与回滚；不把文档要求误称为已有自动执行器。
+- [更新日志](CHANGELOG.md)：功能与文档变化。
+- [仓库](https://github.com/webkubor/frontend-contrast-guard)：源码与问题反馈。
