@@ -7,7 +7,7 @@
  *
  * 与静态检查（check.js 扫 CSS 文件）的区别：那个查「对不对」——色值是不是
  * 达标的 token；这个查「多少」——这一页实际用了几种字号、灰阶拉开几层、
- * 多少元素真的有过渡动效。丑的每一处单看往往都"对"，只有计量能抓出来。
+ * 多少元素声明非零 transition。属性分布不能直接证明真实动效、token 来源或美感。
  *
  * ⚠️ 改这段前必读：可见性判断绝不能用 getBoundingClientRect() 或
  * checkVisibility()。它们是**布局查询**，与 getComputedStyle（**样式查询**）
@@ -35,7 +35,7 @@ export const METRIC_SCRIPT = `(() => {
     if (s.display === 'none' || s.visibility === 'hidden' || parseFloat(s.opacity) <= 0.05) continue;
     visible++;
     if (s.borderRadius !== '0px') add(radius, s.borderRadius);
-    if (s.transitionDuration !== '0s') {
+    if (s.transitionDuration.split(',').some(value => parseFloat(value) > 0)) {
       motionEls++;
       add(duration, s.transitionDuration);
       add(timing, s.transitionTimingFunction);
@@ -82,7 +82,7 @@ export const METRIC_SCRIPT = `(() => {
   };
 })()`
 
-/** 带 transition 的元素占比。区分度最大的单项指标。 */
+/** 非零 transition 声明的元素占比；不是实际播放动效的覆盖率。 */
 export function motionRate(m) {
   return m.visible ? m.motionEls / m.visible : 0
 }
