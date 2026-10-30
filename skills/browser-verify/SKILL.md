@@ -4,7 +4,7 @@ description: UI 视觉验证方法论（截图取证/双主题/移动端/白屏�
 version: 1.0.0
 ---
 
-通用前端研发唯一入口：[Frontend Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/../)。项目品牌、组件库、域名和发布规则从项目读取。
+通用前端研发唯一入口：[Frontend Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/docs/frontend-flow.md)。项目品牌、组件库、域名和发布规则从项目读取。
 
 
 # 浏览器控制 / UI 可视化验证（browser-harness）
@@ -43,4 +43,4 @@ PY
 - 空白页面先看前端错误、请求和资源状态，区分后端不可用与渲染缺陷。
 - 截图后实际打开检查，记录观察，不能裸报「渲染正常」。
 
-工具调用以当前浏览器工具的帮助为准；上面的 browser-harness 示例仅为 fallback，不是强制环境。完整验收走 [frontend-e2e](../frontend-e2e/SKILL.md)，阶段与交付走 [Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/../)。
+工具调用以当前浏览器工具的帮助为准；上面的 browser-harness 示例仅为 fallback，不是强制环境。完整验收走 [frontend-e2e](../frontend-e2e/SKILL.md)，阶段与交付走 [Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/docs/frontend-flow.md)。

@@ -7,7 +7,7 @@ license: MIT
 
 # UI 还原与视觉缺陷修复
 
-唯一入口是 [前端 Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/../)，判定遵循[评审标准](https://github.com/webkubor/frontend-contrast-guard/blob/main/../)。本 skill 是通用工程方法，不为项目指定固定视觉风格。
+唯一入口是 [前端 Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/docs/frontend-flow.md)，判定遵循[评审标准](https://github.com/webkubor/frontend-contrast-guard/blob/main/docs/frontend-review-standard.md)。本 skill 是通用工程方法，不为项目指定固定视觉风格。
 
 ## 1. 锁定参考及边界
 

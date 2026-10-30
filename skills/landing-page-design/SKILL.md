@@ -5,7 +5,7 @@ version: 1.0.0
 license: MIT (上游 https://github.com/elayadesign/ai-design-skills)
 ---
 
-通用前端研发唯一入口：[Frontend Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/../)。项目品牌、组件库、域名和发布规则从项目读取。
+通用前端研发唯一入口：[Frontend Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/docs/frontend-flow.md)。项目品牌、组件库、域名和发布规则从项目读取。
 
 
 # Landing Page Design
@@ -18,7 +18,7 @@ This skill has two halves. **Part A** decides what the page says and how it is s
 
 ## Scope
 
-Apply to landing pages and marketing sites. The [Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/../), project contract and user requirements govern scope and acceptance; this skill supplies methods rather than a universal style.
+Apply to landing pages and marketing sites. The [Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/docs/frontend-flow.md), project contract and user requirements govern scope and acceptance; this skill supplies methods rather than a universal style.
 
 **Companion skill.** For upgrading an *existing* site rather than building a new one, use `redesign-existing-projects` ([github.com/elayadesign/redesign-skill](https://github.com/elayadesign/redesign-skill)). It diagnoses generic patterns and defers to this file for every concrete value.
 

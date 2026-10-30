@@ -19,6 +19,17 @@ jobs:
       # 零依赖，无需 install
       - run: node --test test/*.test.js
 
+  # skills/ 与 docs/ 的链接：相对链接必须存在，本仓绝对链接形态与可达性必须正常。
+  # 2026-10-30 迁移时曾把 skills 里的文档链接批量改成 blob/main/../（404），而只查
+  # 相对路径的检查放过了它。这个门禁就是为拦住那类回归。
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/check-links.mjs
+
   # 本包自己就是护栏，理应用自己检查自己的示例配色
   dogfood:
     runs-on: ubuntu-latest

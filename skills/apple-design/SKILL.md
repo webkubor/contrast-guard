@@ -4,7 +4,7 @@ description: Apple's approach to interface design and fluid, physical motion, tr
 version: 1.0.0
 ---
 
-通用前端研发唯一入口：[Frontend Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/../)。项目品牌、组件库、域名和发布规则从项目读取。
+通用前端研发唯一入口：[Frontend Flow](https://github.com/webkubor/frontend-contrast-guard/blob/main/docs/frontend-flow.md)。项目品牌、组件库、域名和发布规则从项目读取。
 
 
 # Apple Design
