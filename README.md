@@ -109,6 +109,8 @@
 npm i -D frontend-contrast-guard
 ```
 
+> 包尚未发布 npm，发布前以 GitHub 源安装：`npm i -D github:webkubor/frontend-contrast-guard`。
+
 包名为 `frontend-contrast-guard`；`frontend-contrast-guard` 与 `contrast-guard` 两个命令指向同一 CLI，以下使用短别名。
 
 ## 使用
@@ -119,6 +121,7 @@ npx contrast-guard            # 检查，不达标退出码 1
 npx contrast-guard --json     # 机器可读输出
 contrast-guard review --init ui-review.json  # 创建待填写的评审模板
 contrast-guard review ui-review.json --json  # 核验已记录的证据
+contrast-guard setup          # 把体系装进当前 Vite 项目（见下）
 ```
 
 `contrast.config.json`：
@@ -143,6 +146,25 @@ contrast-guard review ui-review.json --json  # 核验已记录的证据
 ```yaml
 - run: npx contrast-guard
 ```
+
+### setup：把前端工程体系装进你的 Vite 项目
+
+在 Vite 项目根目录跑一次，装齐同一条质量链路：本体 + [agent-eyes](https://github.com/webkubor/vite-plugin-agent-eyes)（提交治理与运行时遥测）+ [refresh-guard](https://github.com/webkubor/vite-plugin-refresh-guard)（版本检测刷新），并落一份 [logo-brand-designer](https://github.com/webkubor/logo-brand-designer) skill 到项目 `.zcode/skills/`（随 git 共享给团队）。
+
+```bash
+contrast-guard setup              # 全量安装并接线
+contrast-guard setup --dry-run    # 只预览将发生的改动，不写任何文件
+```
+
+setup 依次做五件事，每步幂等、可重复跑：
+
+1. 探测包管理器（按锁文件），安装上述依赖；**安装失败即中止，不动 vite 配置**，避免产出跑不起来的接线
+2. 备份后改写 `vite.config.{js,ts,mjs,mts}` 注册插件，原文件存为 `*.cg-backup-<时间戳>`；已接线的插件自动跳过
+3. 注入 `contrast:check` script（不覆盖已有键）
+4. 生成 `contrast.config.json` 模板（已存在则跳过）
+5. 克隆 logo skill；机器上没有 git 时给出手动命令
+
+`--skip-install` / `--skip-config` / `--skip-scripts` / `--skip-skill` / `--skip-self` 可分步执行（`--skip-self` 不把本体装进 devDependencies，适合只想接插件的项目）。cs 工具链（cs-mcp、ego-browser）不在自动安装范围，setup 结束会打印指引。
 
 ### 编程调用
 

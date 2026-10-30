@@ -6,6 +6,7 @@
 
 ### Added
 
+- 新增 `contrast-guard setup [--dry-run]`：把前端工程体系引导装进 Vite 项目——安装本体（发布 npm 前走 GitHub 源）与 vite-plugin-agent-eyes、vite-plugin-refresh-guard，备份后幂等改写 vite.config 注册插件，注入 `contrast:check` script，生成 `contrast.config.json` 模板，克隆 logo-brand-designer skill 到 `.zcode/skills/`。`--skip-install/config/scripts/skill/self` 分步执行；安装失败即中止，不改写 vite 配置。
 - 新增 `contrast-guard review --init ui-review.json` 与 `contrast-guard review ui-review.json --json`：以显式产品契约、七个评估维度、声明范围内的截图证据、具体改动和可比 before/after 复测记录形成评审门禁。
 - 评估退出码：`0` 为记录满足门禁的 PASS，`1` 为 HOLD，`2` 为输入错误。初始化成功返回 `0`，空模板评估仍为 HOLD；初始化不覆盖已有文件。
 - [规则演进](docs/rule-evolution.md)：规则身份与版本、正例与反例、`proposed / trial / stable / deprecated` 生命周期、试验预算、停止与回滚；配合更新后的 [前端 UI 评审标准](docs/frontend-review-standard.md)。

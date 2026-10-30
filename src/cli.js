@@ -15,6 +15,10 @@
  *
  * 两者分工：check 查「对不对」（色值达不达标），measure 查「多少」
  * （几种字号、几层灰阶、多少元素有动效）。丑的每一处单看往往都"对"。
+ *
+ * 体系引导：
+ *   contrast-guard setup            把本体 + vite 插件 + logo skill 装进当前 Vite 项目
+ *                                    --dry-run 预览；--skip-install/config/scripts/skill/self 分步执行
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs'
 import { resolve, dirname, join, basename } from 'node:path'
@@ -78,6 +82,11 @@ const cwd = process.cwd()
 
 // measure 是唯一需要浏览器的子命令，相关模块也只在这条路径上动态加载——
 // check 路径完全不碰它们，零依赖承诺不受影响。
+// setup 涉及安装与网络，同样只在自己这条路径上动态加载。
+if (args[0] === 'setup') {
+  const { runSetup } = await import('./setup-cli.js')
+  process.exit(runSetup(args.slice(1), cwd))
+}
 if (args[0] === 'review') {
   const { runReview } = await import('./review-cli.js')
   process.exit(runReview(args.slice(1)))
