@@ -2,3 +2,4 @@
 export { check } from './check.js'
 export { parseColor, contrast, oklchToRgb, solveLightness, toHex, luminance } from './color.js'
 export { extractCss, extractJs, extractFile, resolveVar } from './extract.js'
+export { reviewTemplate, validateReview, evaluateReview, DIMENSIONS, REVIEW_VERSION } from './review.js'

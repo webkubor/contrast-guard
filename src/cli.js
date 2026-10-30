@@ -78,6 +78,10 @@ const cwd = process.cwd()
 
 // measure 是唯一需要浏览器的子命令，相关模块也只在这条路径上动态加载——
 // check 路径完全不碰它们，零依赖承诺不受影响。
+if (args[0] === 'review') {
+  const { runReview } = await import('./review-cli.js')
+  process.exit(runReview(args.slice(1)))
+}
 if (args[0] === 'measure') {
   await runMeasure(args.slice(1), cwd)
   process.exit(0)
@@ -219,9 +223,10 @@ async function runMeasure(argv, cwd) {
   console.log(`\n${C.b}视觉计量${C.x}  ${m.url}`)
   console.log(`${C.d}可见元素 ${m.visible} · 文本元素 ${m.textEls} · 计量耗时 ${m.ms}ms · 驱动 ${m.driver}${C.x}\n`)
 
-  console.log(`${C.b}判据${C.x}`)
+  console.log(`${C.b}计量观察${C.x} ${C.d}（CSS 分布不等于审美评分；具体改善见 review 契约）${C.x}`)
   for (const v of V.verdicts(m)) {
-    console.log(v.level === 'warn' ? `  ${C.r}⚠${C.x}  ${v.text}` : `  ${C.g}✓${C.x}  ${v.text}`)
+    console.log(v.level === 'warn' ? `  ${C.y}⚠${C.x}  ${v.text}` : `  ${C.d}·${C.x}  ${v.text}`)
+    if (v.nextCheck) console.log(`    ${C.d}下一步：${v.nextCheck}${C.x}`)
   }
   console.log()
 
